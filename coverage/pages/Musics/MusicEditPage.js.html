@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for pages/Apartments/ApartmentCreatePage.js</title>
+    <title>Code coverage report for pages/Musics/MusicEditPage.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">pages/Apartments</a> ApartmentCreatePage.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">pages/Musics</a> MusicEditPage.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -86,22 +86,34 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -109,29 +121,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import ApartmentForm from "main/components/Apartments/ApartmentForm";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import { useParams } from "react-router-dom";
+import { musicUtils }  from 'main/utils/musicUtils';
+import MusicForm from 'main/components/Musics/MusicForm';
 import { useNavigate } from 'react-router-dom'
-import { apartmentUtils } from 'main/utils/apartmentUtils';
 &nbsp;
-export default function ApartmentCreatePage() {
 &nbsp;
-  let navigate = useNavigate(); 
+export default function MusicEditPage() {
+    let { id } = useParams();
 &nbsp;
-  const onSubmit = async (apartment) =&gt; {
-    const createdApartment = apartmentUtils.add(apartment);
-    console.log("createdApartment: " + JSON.stringify(createdApartment));
-    navigate("/apartments");
-  }  
+    let navigate = useNavigate(); 
 &nbsp;
-  return (
-    &lt;BasicLayout&gt;
-      &lt;div className="pt-2"&gt;
-        &lt;h1&gt;Create New Apartment&lt;/h1&gt;
-        &lt;ApartmentForm submitAction={onSubmit} /&gt;
-      &lt;/div&gt;
-    &lt;/BasicLayout&gt;
-  )
+    const response = musicUtils.getById(id);
+&nbsp;
+    const onSubmit = async (music) =&gt; {
+        const updatedMusic = musicUtils.update(music);
+        console.log("updatedMusic: " + JSON.stringify(updatedMusic));
+        navigate("/musics");
+    }  
+&nbsp;
+    return (
+        &lt;BasicLayout&gt;
+            &lt;div className="pt-2"&gt;
+                &lt;h1&gt;Edit Music&lt;/h1&gt;
+                &lt;MusicForm submitAction={onSubmit} buttonLabel={"Update"} initialContents={response.music}/&gt;
+            &lt;/div&gt;
+        &lt;/BasicLayout&gt;
+    )
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -139,7 +157,7 @@ export default function ApartmentCreatePage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu May 18 2023 14:53:02 GMT-0700 (Pacific Daylight Time)
+                at Thu May 18 2023 14:55:03 GMT-0700 (Pacific Daylight Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

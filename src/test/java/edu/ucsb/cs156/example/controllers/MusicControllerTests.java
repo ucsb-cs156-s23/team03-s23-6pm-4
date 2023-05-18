@@ -252,9 +252,9 @@ public class MusicControllerTests extends ControllerTestCase {
 
                 Music nineteenEdited = Music.builder()
                                 .title("Bibo No Aozora edited")
-                                .album("1996")
-                                .artist("Ryuichi Sakamoto")
-                                .genre("Classical")
+                                .album("1997")
+                                .artist("Ryuichi Sakamota")
+                                .genre("Classic")
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(nineteenEdited);

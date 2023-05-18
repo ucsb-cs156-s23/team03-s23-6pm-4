@@ -78,6 +78,14 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               }
             </Nav>
 
+            <Nav className="mr-auto">
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <Nav.Link as={Link} to="/restaurants">Restaurants</Nav.Link>
+                )
+              }
+            </Nav>
+
             <Nav className="ml-auto">
               {
                 currentUser && currentUser.loggedIn ? (
@@ -90,6 +98,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
+            
           </Navbar.Collapse>
         </Container >
       </Navbar >

@@ -78,6 +78,17 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               }
             </Nav>
 
+            <Nav className="mr-auto">
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="Apartments" id="appnavbar-apartments-dropdown" data-testid="appnavbar-apartments-dropdown" >
+                    <NavDropdown.Item href="/apartments/">List Apartments</NavDropdown.Item>
+                    <NavDropdown.Item href="/apartments/create">Create Apartment</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
+            </Nav>
+
             <Nav className="ml-auto">
               {
                 currentUser && currentUser.loggedIn ? (
@@ -90,6 +101,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
+
           </Navbar.Collapse>
         </Container >
       </Navbar >

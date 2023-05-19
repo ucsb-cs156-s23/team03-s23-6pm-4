@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,20 +105,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,22 +136,22 @@ import ApartmentTable from 'main/components/Apartments/ApartmentTable';
 import { apartmentUtils } from 'main/utils/apartmentUtils';
 import { useNavigate, Link } from 'react-router-dom';
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >ApartmentIndexPage(</span>) {
+export default function ApartmentIndexPage() {
 &nbsp;
-    const navigate = <span class="cstat-no" title="statement not covered" >useNavigate();</span>
+    const navigate = useNavigate();
 &nbsp;
-    const apartmentCollection = <span class="cstat-no" title="statement not covered" >apartmentUtils.get();</span>
-    const apartments = <span class="cstat-no" title="statement not covered" >apartmentCollection.apartments;</span>
+    const apartmentCollection = apartmentUtils.get();
+    const apartments = apartmentCollection.apartments;
 &nbsp;
-    const showCell = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>ell) =&gt; <span class="cstat-no" title="statement not covered" >JSON.stringify(cell.row.values);</span></span>
+    const showCell = (cell) =&gt; JSON.stringify(cell.row.values);
 &nbsp;
-    const deleteCallback = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync (cell) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        console.log(`ApartmentIndexPage deleteCallback: ${showCell(cell)})`);</span>
-<span class="cstat-no" title="statement not covered" >        apartmentUtils.del(cell.row.values.id);</span>
-<span class="cstat-no" title="statement not covered" >        navigate("/apartments");</span>
+    const deleteCallback = async (cell) =&gt; {
+        console.log(`ApartmentIndexPage deleteCallback: ${showCell(cell)})`);
+        apartmentUtils.del(cell.row.values.id);
+        navigate("/apartments");
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
         &lt;BasicLayout&gt;
             &lt;div className="pt-2"&gt;
                 &lt;Button style={{ float: "right" }} as={Link} to="/apartments/create"&gt;
@@ -169,7 +169,7 @@ export default function <span class="fstat-no" title="function not covered" >Apa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri May 19 2023 11:03:33 GMT-0700 (Pacific Daylight Time)
+                at Fri May 19 2023 11:35:12 GMT-0700 (Pacific Daylight Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -82,8 +82,12 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               {
                 hasRole(currentUser, "ROLE_USER") && (
                   <NavDropdown title="Apartments" id="appnavbar-apartments-dropdown" data-testid="appnavbar-apartments-dropdown" >
-                    <NavDropdown.Item href="/apartments/">List Apartments</NavDropdown.Item>
-                    <NavDropdown.Item href="/apartments/create">Create Apartment</NavDropdown.Item>
+                    <NavDropdown.Item href="/apartments/list" data-testid="appnavbar-apartments-list">List</NavDropdown.Item>
+                    {
+                      hasRole(currentUser, "ROLE_ADMIN") && (
+                        <NavDropdown.Item href="/apartments/create" data-testid="appnavbar-apartments-create">Create</NavDropdown.Item>
+                      )
+                    }
                   </NavDropdown>
                 )
               }

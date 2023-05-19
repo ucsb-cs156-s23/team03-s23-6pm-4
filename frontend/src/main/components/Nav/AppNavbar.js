@@ -84,6 +84,13 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                   <NavDropdown title="Apartments" id="appnavbar-apartments-dropdown" data-testid="appnavbar-apartments-dropdown" >
                     <NavDropdown.Item href="/apartments/">List Apartments</NavDropdown.Item>
                     <NavDropdown.Item href="/apartments/create">Create Apartment</NavDropdown.Item>
+                  <NavDropdown title="Restaurants" id="appnavbar-restaurants-dropdown" data-testid="appnavbar-restaurants-dropdown" >
+                    <NavDropdown.Item href="/restaurants/list" data-testid="appnavbar-restaurants-list">List</NavDropdown.Item>
+                    {
+                      hasRole(currentUser, "ROLE_ADMIN") && (
+                        <NavDropdown.Item href="/restaurants/create" data-testid="appnavbar-restaurants-create">Create</NavDropdown.Item>
+                      )
+                    }
                   </NavDropdown>
                 )
               }
@@ -101,7 +108,6 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
-
           </Navbar.Collapse>
         </Container >
       </Navbar >

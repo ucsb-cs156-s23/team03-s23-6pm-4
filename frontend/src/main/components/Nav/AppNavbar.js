@@ -81,6 +81,21 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="Apartments" id="appnavbar-apartments-dropdown" data-testid="appnavbar-apartments-dropdown" >
+                    <NavDropdown.Item href="/apartments/list" data-testid="appnavbar-apartments-list">List</NavDropdown.Item>
+                    {
+                      hasRole(currentUser, "ROLE_ADMIN") && (
+                        <NavDropdown.Item href="/apartments/create" data-testid="appnavbar-apartments-create">Create</NavDropdown.Item>
+                      )
+                    }
+                  </NavDropdown>
+                )
+              }
+            </Nav>
+
+            <Nav className="mr-auto">
+              {
+                hasRole(currentUser, "ROLE_USER") && (
                   <NavDropdown title="Restaurants" id="appnavbar-restaurants-dropdown" data-testid="appnavbar-restaurants-dropdown" >
                     <NavDropdown.Item href="/restaurants/list" data-testid="appnavbar-restaurants-list">List</NavDropdown.Item>
                     {
@@ -105,7 +120,6 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
-            
           </Navbar.Collapse>
         </Container >
       </Navbar >

@@ -11,11 +11,15 @@ import UCSBDatesIndexPage from "main/pages/UCSBDates/UCSBDatesIndexPage";
 import UCSBDatesCreatePage from "main/pages/UCSBDates/UCSBDatesCreatePage";
 import UCSBDatesEditPage from "main/pages/UCSBDates/UCSBDatesEditPage";
 
+import ApartmentCreatePage from "main/pages/Apartments/ApartmentCreatePage";
+import ApartmentEditPage from "main/pages/Apartments/ApartmentEditPage";
+import ApartmentIndexPage from "main/pages/Apartments/ApartmentIndexPage";
+import ApartmentDetailsPage from "main/pages/Apartments/ApartmentDetailsPage";
+
 import RestaurantCreatePage from "main/pages/Restaurants/RestaurantCreatePage";
 import RestaurantEditPage from "main/pages/Restaurants/RestaurantEditPage";
 import RestaurantIndexPage from "main/pages/Restaurants/RestaurantIndexPage";
 import RestaurantDetailsPage from "main/pages/Restaurants/RestaurantDetailsPage";
-
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
@@ -68,6 +72,17 @@ function App() {
             <>
               <Route exact path="/ucsbdates/edit/:id" element={<UCSBDatesEditPage />} />
               <Route exact path="/ucsbdates/create" element={<UCSBDatesCreatePage />} />
+            </>
+          )
+        }
+
+{
+        hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/apartments/create" element={<ApartmentCreatePage />} />
+              <Route exact path="/apartments/edit/:id" element={<ApartmentEditPage />} />
+              <Route exact path="/apartments/details/:id" element={<ApartmentDetailsPage />} />
+              <Route exact path="/apartments/" element={<ApartmentIndexPage />} />
             </>
           )
         }

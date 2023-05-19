@@ -204,7 +204,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_can_delete_a_date() throws Exception {
+        public void admin_can_delete_an_apartment() throws Exception {
                 // arrange
 
                 Apartment sierraMadreVillages = Apartment.builder()

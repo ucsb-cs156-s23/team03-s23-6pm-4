@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s23/team03-s23-6pm-4
 owner: ucsb-cs156-s23
 repo_name: team03-s23-6pm-4
-pull_requests: [{"author":{"id":"MDQ6VXNlcjc3NzAwMjYz","is_bot":false,"login":"ashleybudman","name":""},"headRefName":"AshleyB-restaurantaddteam02again","number":23,"title":"AB - add Restaurant to Team03 from Team02","url":"https://github.com/ucsb-cs156-s23/team03-s23-6pm-4/pull/23"},{"author":{"id":"MDQ6VXNlcjgxMzQxODE5","is_bot":false,"login":"kshitij0407","name":"Kshitij Agarwal"},"headRefName":"KrishA-Team03","number":15,"title":"Added all frontend files from team01 into team03","url":"https://github.com/ucsb-cs156-s23/team03-s23-6pm-4/pull/15"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjgxMzQxODE5","is_bot":false,"login":"kshitij0407","name":"Kshitij Agarwal"},"headRefName":"KrishA-Team03","number":15,"title":"Added all frontend files from team01 into team03","url":"https://github.com/ucsb-cs156-s23/team03-s23-6pm-4/pull/15"}]

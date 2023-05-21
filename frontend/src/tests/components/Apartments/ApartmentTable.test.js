@@ -1,213 +1,123 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
-import ApartmentTable, { showCell } from "main/components/Apartments/ApartmentTable";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { apartmentFixtures } from "fixtures/apartmentFixtures";
-import mockConsole from "jest-mock-console";
+import ApartmentTable from "main/components/Apartments/ApartmentTable"
+import { QueryClient, QueryClientProvider } from "react-query";
+import { MemoryRouter } from "react-router-dom";
+import { currentUserFixtures } from "fixtures/currentUserFixtures";
+
 
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedNavigate
 }));
 
-describe("ApartmentTable tests", () => {
+describe("UserTable tests", () => {
   const queryClient = new QueryClient();
 
-  const expectedHeaders = ["id", "Name", "Address", "City", "State", "Rooms", "Description"];
-  const expectedFields = ["id", "name", "address", "city", "state", "rooms", "description"];
-  const testId = "ApartmentTable";
 
-  test("showCell function works properly", () => {
-    const cell = {
-      row: {
-        values: { a: 1, b: 2, c: 3 }
-      },
-    };
-    expect(showCell(cell)).toBe(`{"a":1,"b":2,"c":3}`);
-  });
-
-  test("renders without crashing for empty table", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <ApartmentTable apartments={[]} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-  });
-
-
-
-  test("Has the expected column headers, content and buttons", () => {
+  test("renders without crashing for empty table with user not logged in", () => {
+    const currentUser = null;
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ApartmentTable apartments={apartmentFixtures.threeApartments} />
+          <ApartmentTable apartments={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
+
     );
+  });
+  test("renders without crashing for empty table for ordinary user", () => {
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ApartmentTable apartments={[]} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+  });
+
+  test("renders without crashing for empty table for admin", () => {
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ApartmentTable apartments={[]} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+  });
+
+  test("Has the expected colum headers and content for adminUser", () => {
+
+    const currentUser = currentUserFixtures.adminUser;
+
+    const { getByText, getByTestId } = render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ApartmentTable apartments={apartmentFixtures.threeApartments} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+
+    const expectedHeaders = ["id", "Name", "Address", "City", "State", "Rooms", "Description"];
+    const expectedFields = ["id", "name", "address", "city", "state", "rooms", "description"];
+    const testId = "ApartmentTable";
 
     expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
+      const header = getByText(headerText);
       expect(header).toBeInTheDocument();
     });
 
     expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      const header = getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("El Dorado");
+    expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+    expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
 
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("3");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-name`)).toHaveTextContent("San Joaquin North Villages");
-
-    const detailsButton = screen.getByTestId(`${testId}-cell-row-0-col-Details-button`);
-    expect(detailsButton).toBeInTheDocument();
-    expect(detailsButton).toHaveClass("btn-primary");
-
-    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     expect(editButton).toHaveClass("btn-primary");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = getByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
 
   });
 
-  test("Has the expected column headers, content and no buttons when showButtons=false", () => {
+  test("Edit button navigates to the edit page for admin user", async () => {
 
-    render(
+    const currentUser = currentUserFixtures.adminUser;
+
+    const { getByText, getByTestId } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ApartmentTable apartments={apartmentFixtures.threeApartments} showButtons={false} />
+          <ApartmentTable apartments={apartmentFixtures.threeApartments} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
+
     );
 
-    expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
+    await waitFor(() => { expect(getByTestId(`ApartmentTable-cell-row-0-col-id`)).toHaveTextContent("1"); });
 
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
-      expect(header).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("El Dorado");
-
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("3");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-name`)).toHaveTextContent("San Joaquin North Villages");
-
-    expect(screen.queryByText("Delete")).not.toBeInTheDocument();
-    expect(screen.queryByText("Edit")).not.toBeInTheDocument();
-    expect(screen.queryByText("Details")).not.toBeInTheDocument();
-  });
-
-
-  test("Edit button navigates to the edit page", async () => {
-    // arrange
-    const restoreConsole = mockConsole();
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <ApartmentTable apartments={apartmentFixtures.threeApartments} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    // assert - check that the expected content is rendered
-    expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("El Dorado");
-
-    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = getByTestId(`ApartmentTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
-
-    // act - click the edit button
+    
     fireEvent.click(editButton);
 
-    // assert - check that the navigate function was called with the expected path
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartments/edit/2'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartment/edit/1'));
 
-    // assert - check that the console.log was called with the expected message
-    expect(console.log).toHaveBeenCalled();
-    const message = console.log.mock.calls[0][0];
-    const expectedMessage = `editCallback: {"id":2,"name":"El Dorado","address":"6667 El Colegio Road","city":"Goleta","state":"CA","rooms":50,"description":"Tropicana but Nicer"})`;
-    expect(message).toMatch(expectedMessage);
-    restoreConsole();
   });
 
-  test("Details button navigates to the details page", async () => {
-    // arrange
-    const restoreConsole = mockConsole();
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <ApartmentTable apartments={apartmentFixtures.threeApartments} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    // assert - check that the expected content is rendered
-    expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("El Dorado");
-
-    const detailsButton = screen.getByTestId(`${testId}-cell-row-0-col-Details-button`);
-    expect(detailsButton).toBeInTheDocument();
-
-    // act - click the details button
-    fireEvent.click(detailsButton);
-
-    // assert - check that the navigate function was called with the expected path
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartments/details/2'));
-
-    // assert - check that the console.log was called with the expected message
-    expect(console.log).toHaveBeenCalled();
-    const message = console.log.mock.calls[0][0];
-    const expectedMessage = `detailsCallback: {"id":2,"name":"El Dorado","address":"6667 El Colegio Road","city":"Goleta","state":"CA","rooms":50,"description":"Tropicana but Nicer"})`;
-    expect(message).toMatch(expectedMessage);
-    restoreConsole();
-  });
-
-  test("Delete button calls delete callback", async () => {
-    // arrange
-    const restoreConsole = mockConsole();
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <ApartmentTable apartments={apartmentFixtures.threeApartments} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    // assert - check that the expected content is rendered
-    expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("El Dorado");
-
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    expect(deleteButton).toBeInTheDocument();
-
-     // act - click the delete button
-    fireEvent.click(deleteButton);
-
-     // assert - check that the console.log was called with the expected message
-     await(waitFor(() => expect(console.log).toHaveBeenCalled()));
-     const message = console.log.mock.calls[0][0];
-     const expectedMessage = `deleteCallback: {"id":2,"name":"El Dorado","address":"6667 El Colegio Road","city":"Goleta","state":"CA","rooms":50,"description":"Tropicana but Nicer"})`;
-     expect(message).toMatch(expectedMessage);
-     restoreConsole();
-  });
 });
+

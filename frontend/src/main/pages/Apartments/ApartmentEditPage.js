@@ -29,8 +29,8 @@ export default function ApartmentEditPage() {
       id: apartment.id,
     },
     data: {
-      //code: apartment.code,
       name: apartment.name,
+      //code: apartment.code,
       address: apartment.address,
       city: apartment.city,
       state: apartment.state,

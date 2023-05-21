@@ -125,8 +125,6 @@ describe("UCSBDatesEditPage tests", () => {
 
         test("Changes when you click Update", async () => {
 
-
-
             const { getByTestId, findByTestId } = render(
                 <QueryClientProvider client={queryClient}>
                     <MemoryRouter>
@@ -170,7 +168,6 @@ describe("UCSBDatesEditPage tests", () => {
 
         });
 
-       
     });
 });
 

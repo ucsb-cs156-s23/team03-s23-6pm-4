@@ -5,8 +5,6 @@ import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/restaurantU
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
-const showCell = (cell) => JSON.stringify(cell.row.values);
-
 export default function RestaurantTable({
     restaurants,
     showButtons = true,
@@ -17,12 +15,10 @@ export default function RestaurantTable({
     const navigate = useNavigate();
  
     const editCallback = (cell) => {
-        console.log(`editCallback: ${showCell(cell)})`);
         navigate(`/restaurants/edit/${cell.row.values.id}`)
     }
 
     const detailsCallback = (cell) => {
-        console.log(`detailsCallback: ${showCell(cell)})`);
         navigate(`/restaurants/details/${cell.row.values.id}`)
     }
 
@@ -73,5 +69,3 @@ export default function RestaurantTable({
         testid={testIdPrefix}
     />;
 };
-
-export { showCell };

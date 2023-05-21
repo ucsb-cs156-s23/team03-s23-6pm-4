@@ -57,7 +57,7 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
         @Test
         public void logged_out_users_cannot_get_by_id() throws Exception {
-                mockMvc.perform(get("/api/restaurant?code=mokkoji"))
+                mockMvc.perform(get("/api/restaurant?id=3"))
                                 .andExpect(status().is(403)); // logged out users can't get by id
         }
 
@@ -87,20 +87,18 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant restaurants = Restaurant.builder()
                                 .name("Mokkoji")
-                                .code("mokkoji")
-                                .descript("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
-                                .yelp_rating("4 stars")
+                                .description("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
                                 .build();
 
-                when(RestaurantRepository.findById(eq("mokkoji"))).thenReturn(Optional.of(restaurants));
+                when(RestaurantRepository.findById(eq(7L))).thenReturn(Optional.of(restaurants));
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/restaurant?code=mokkoji"))
+                MvcResult response = mockMvc.perform(get("/api/restaurant?id=7"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
 
-                verify(RestaurantRepository, times(1)).findById(eq("mokkoji"));
+                verify(RestaurantRepository, times(1)).findById(eq(7L));
                 String expectedJson = mapper.writeValueAsString(restaurants);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
@@ -112,18 +110,18 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 // arrange
 
-                when(RestaurantRepository.findById(eq("orangetheory"))).thenReturn(Optional.empty());
+                when(RestaurantRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/restaurant?code=orangetheory"))
+                MvcResult response = mockMvc.perform(get("/api/restaurant?id=7"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
 
-                verify(RestaurantRepository, times(1)).findById(eq("orangetheory"));
+                verify(RestaurantRepository, times(1)).findById(eq(7L));
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("EntityNotFoundException", json.get("type"));
-                assertEquals("Restaurant with id orangetheory not found", json.get("message"));
+                assertEquals("Restaurant with id 7 not found", json.get("message"));
         }
 
         @WithMockUser(roles = { "USER" })
@@ -134,16 +132,12 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant mokkoji = Restaurant.builder()
                                 .name("Mokkoji")
-                                .code("mokkoji")
-                                .descript("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
-                                .yelp_rating("4 stars")
+                                .description("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
                                 .build();
 
                 Restaurant ohshima = Restaurant.builder()
                                 .name("Ohshima")
-                                .code("ohshima")
-                                .descript("Simple nook known for its fresh seafood and omakase, plus other creative Japanese fare, beer and wine")
-                                .yelp_rating("4.5 stars")
+                                .description("Simple nook known for its fresh seafood and omakase, plus other creative Japanese fare, beer and wine")
                                 .build();
 
                 ArrayList<Restaurant> expectedRestaurants = new ArrayList<>();
@@ -170,16 +164,14 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant tanakaya = Restaurant.builder()
                                 .name("Tanakaya")
-                                .code("tanakaya")
-                                .descript("Japanese soba and udon noodles are the draw at this popular, compact eatery with a casual atmosphere")
-                                .yelp_rating("4 stars")
+                                .description("Japanese soba and udon noodles are the draw at this popular, compact eatery with a casual atmosphere")
                                 .build();
 
                 when(RestaurantRepository.save(eq(tanakaya))).thenReturn(tanakaya);
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/restaurant/post?name=Tanakaya&code=tanakaya&descript=Japanese soba and udon noodles are the draw at this popular, compact eatery with a casual atmosphere&yelp_rating=4 stars")
+                                post("/api/restaurant/post?name=Tanakaya&description=Japanese soba and udon noodles are the draw at this popular, compact eatery with a casual atmosphere")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -197,25 +189,23 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant hironori = Restaurant.builder()
                                 .name("Hironori")
-                                .code("hironori")
-                                .descript("Fresh cut noodles, hand made broth and sauce with lots of passion and technique from the 2 best Japanese ramen chefs")
-                                .yelp_rating("4.5 stars")
+                                .description("Fresh cut noodles, hand made broth and sauce with lots of passion and technique from the 2 best Japanese ramen chefs")
                                 .build();
 
-                when(RestaurantRepository.findById(eq("hironori"))).thenReturn(Optional.of(hironori));
+                when(RestaurantRepository.findById(eq(15L))).thenReturn(Optional.of(hironori));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/restaurant?code=hironori")
+                                delete("/api/restaurant?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(RestaurantRepository, times(1)).findById("hironori");
+                verify(RestaurantRepository, times(1)).findById(15L);
                 verify(RestaurantRepository, times(1)).delete(any());
 
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Restaurant with id hironori deleted", json.get("message"));
+                assertEquals("Restaurant with id 15 deleted", json.get("message"));
         }
 
         @WithMockUser(roles = { "ADMIN", "USER" })
@@ -224,18 +214,18 @@ public class RestaurantControllerTests extends ControllerTestCase {
                         throws Exception {
                 // arrange
 
-                when(RestaurantRepository.findById(eq("orangetheory"))).thenReturn(Optional.empty());
+                when(RestaurantRepository.findById(eq(15L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/restaurant?code=orangetheory")
+                                delete("/api/restaurant?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(RestaurantRepository, times(1)).findById("orangetheory");
+                verify(RestaurantRepository, times(1)).findById(15L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Restaurant with id orangetheory not found", json.get("message"));
+                assertEquals("Restaurant with id 15 not found", json.get("message"));
         }
 
         @WithMockUser(roles = { "ADMIN", "USER" })
@@ -245,25 +235,21 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant mokkojiOrig = Restaurant.builder()
                                 .name("Mokkoji")
-                                .code("mokkoji")
-                                .descript("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
-                                .yelp_rating("4 stars")
+                                .description("Trendy, contemporary eatery focusing on shabu-shabu hot pot and other Japanese specialties")
                                 .build();
 
                 Restaurant mokkojiEdited = Restaurant.builder()
                                 .name("Mokkoji Shabu Shabu Bar")
-                                .code("mokkoji")
-                                .descript("Trendy eatery focusing on shabu-shabu hot pot and other Japanese specialties")
-                                .yelp_rating("4.5 stars")
+                                .description("Trendy eatery focusing on shabu-shabu hot pot and other Japanese specialties")
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(mokkojiEdited);
 
-                when(RestaurantRepository.findById(eq("mokkoji"))).thenReturn(Optional.of(mokkojiOrig));
+                when(RestaurantRepository.findById(eq(67L))).thenReturn(Optional.of(mokkojiOrig));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/restaurant?code=mokkoji")
+                                put("/api/restaurant?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -271,7 +257,7 @@ public class RestaurantControllerTests extends ControllerTestCase {
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(RestaurantRepository, times(1)).findById("mokkoji");
+                verify(RestaurantRepository, times(1)).findById(67L);
                 verify(RestaurantRepository, times(1)).save(mokkojiEdited); // should be saved with updated info
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(requestBody, responseString);
@@ -284,18 +270,16 @@ public class RestaurantControllerTests extends ControllerTestCase {
 
                 Restaurant editedRestaurants = Restaurant.builder()
                                 .name("OrangeTheory")
-                                .code("orangetheory")
-                                .descript("An American boutique fitness studio franchise")
-                                .yelp_rating("4.5 stars")
+                                .description("An American boutique fitness studio franchise")
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(editedRestaurants);
 
-                when(RestaurantRepository.findById(eq("orangetheory"))).thenReturn(Optional.empty());
+                when(RestaurantRepository.findById(eq(67L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/restaurant?code=orangetheory")
+                                put("/api/restaurant?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -303,9 +287,9 @@ public class RestaurantControllerTests extends ControllerTestCase {
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(RestaurantRepository, times(1)).findById("orangetheory");
+                verify(RestaurantRepository, times(1)).findById(67L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Restaurant with id orangetheory not found", json.get("message"));
+                assertEquals("Restaurant with id 67 not found", json.get("message"));
 
         }
 }

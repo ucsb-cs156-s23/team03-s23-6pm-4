@@ -44,32 +44,28 @@ public class RestaurantController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public Restaurant getById(
-            @ApiParam("code") @RequestParam String code) {
-        Restaurant restaurants = RestaurantRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, code));
+            @ApiParam("id") @RequestParam Long id) {
+        Restaurant restaurant = RestaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, id));
 
-        return restaurants;
+        return restaurant;
     }
 
     @ApiOperation(value = "Create a new restaurant")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
-    public Restaurant postRestaurants(
-        @ApiParam("code") @RequestParam String code,
+    public Restaurant postRestaurant(
         @ApiParam("name") @RequestParam String name,
-        @ApiParam("descript") @RequestParam String descript,
-        @ApiParam("yelp_rating") @RequestParam String yelp_rating
+        @ApiParam("description") @RequestParam String description
         )
         {
 
-        Restaurant restaurants = new Restaurant();
-        restaurants.setCode(code);
-        restaurants.setName(name);
-        restaurants.setDescript(descript);
-        restaurants.setYelp_rating(yelp_rating);
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(name);
+        restaurant.setDescription(description);
     
 
-        Restaurant savedRestaurant = RestaurantRepository.save(restaurants);
+        Restaurant savedRestaurant = RestaurantRepository.save(restaurant);
 
         return savedRestaurant;
     }
@@ -78,32 +74,31 @@ public class RestaurantController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteRestaurant(
-            @ApiParam("code") @RequestParam String code) {
-        Restaurant restaurants = RestaurantRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, code));
+            @ApiParam("id") @RequestParam Long id) {
+        Restaurant restaurant = RestaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, id));
 
-        RestaurantRepository.delete(restaurants);
-        return genericMessage("Restaurant with id %s deleted".formatted(code));
+        RestaurantRepository.delete(restaurant);
+        return genericMessage("Restaurant with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single restaurant")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
     public Restaurant updateRestaurant(
-            @ApiParam("code") @RequestParam String code,
+            @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Restaurant incoming) {
 
-        Restaurant restaurants = RestaurantRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, code));
+        Restaurant restaurant = RestaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, id));
 
 
-        restaurants.setName(incoming.getName());  
-        restaurants.setDescript(incoming.getDescript());
-        restaurants.setYelp_rating(incoming.getYelp_rating());
+        restaurant.setName(incoming.getName());  
+        restaurant.setDescription(incoming.getDescription());
     
 
-        RestaurantRepository.save(restaurants);
+        RestaurantRepository.save(restaurant);
 
-        return restaurants;
+        return restaurant;
     }
 }

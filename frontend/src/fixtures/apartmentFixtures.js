@@ -2,18 +2,28 @@ const apartmentFixtures = {
     oneApartment:
     [
       {
-       "id": 1,
-        "name": "Sierra Madre Villages",
-        "address": "555 Storke Road",
-        "city": "Goleta",
-        "state": "CA",
-        "rooms": 109,
-        "description": "Nice and New"      
-      }
+            "id": 1,
+            "name": "Sierra Madre Villages",
+            "address": "555 Storke Road",
+            "city": "Goleta",
+            "state": "CA",
+            "rooms": 109,
+            "description": "Nice and New"      
+        }
     ],
 
     threeApartments:
     [
+        {
+            "id": 1,
+            "name": "Sierra Madre Villages",
+            "address": "555 Storke Road",
+            "city": "Goleta",
+            "state": "CA",
+            "rooms": 109,
+            "description": "Nice and New"      
+        },
+
         {
             "id": 2,
             "name": "El Dorado",
@@ -33,17 +43,6 @@ const apartmentFixtures = {
             "rooms": 166,
             "description": "Nice but Far"
         },
-
-        {
-            "id": 4,
-        "name": "Tropicana Villas",
-        "address": "811 Camino Pescadero",
-        "city": "Goleta",
-        "state": "CA",
-        "rooms": 48,
-        "description": "Dated and Run-Down"
-        },
-        
     ]
 };
 

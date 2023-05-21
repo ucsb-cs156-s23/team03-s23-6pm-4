@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export default function RestaurantCreatePage() {
 
   const objectToAxiosParams = (Restaurant) => ({
-    url: "/api/restaurants/post",
+    url: "/api/restaurant/post",
     method: "POST",
     params: {
       name: Restaurant.name,
@@ -23,7 +23,7 @@ export default function RestaurantCreatePage() {
     objectToAxiosParams,
      { onSuccess }, 
      // Stryker disable next-line all : hard to set up test for caching
-     ["/api/restaurants/all"]
+     ["/api/restaurant/all"]
      );
 
   const { isSuccess } = mutation

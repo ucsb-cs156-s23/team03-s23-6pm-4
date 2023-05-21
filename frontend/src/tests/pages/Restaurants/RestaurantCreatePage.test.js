@@ -59,7 +59,7 @@ describe("RestaurantCreatePage tests", () => {
             description: "Best nachos in Isla Vista"
         };
 
-        axiosMock.onPost("/api/restaurants/post").reply( 202, Restaurant );
+        axiosMock.onPost("/api/restaurant/post").reply( 202, Restaurant );
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>

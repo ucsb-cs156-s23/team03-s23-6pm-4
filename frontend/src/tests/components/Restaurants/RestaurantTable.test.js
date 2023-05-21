@@ -85,6 +85,10 @@ describe("UserTable tests", () => {
     expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("2");
     expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("3");
 
+    const detailsButton = getByTestId(`${testId}-cell-row-0-col-Details-button`);
+    expect(detailsButton).toBeInTheDocument();
+    expect(detailsButton).toHaveClass("btn-primary");
+
     const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     expect(editButton).toHaveClass("btn-primary");
@@ -118,6 +122,30 @@ describe("UserTable tests", () => {
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/restaurants/edit/2'));
 
   });
+
+  test("Details button navigates to the details page", async () => {
+    
+    const currentUser = currentUserFixtures.adminUser;
+
+    const { getByText, getByTestId } = render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <RestaurantTable restaurants={restaurantFixtures.threeRestaurants} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+
+    await waitFor(() => { expect(getByTestId(`RestaurantTable-cell-row-0-col-id`)).toHaveTextContent("2"); });
+
+    const detailsButton = getByTestId(`RestaurantTable-cell-row-0-col-Details-button`);
+    expect(detailsButton).toBeInTheDocument();
+    
+    fireEvent.click(detailsButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/restaurants/details/2'));
+  });
+
 
 });
 

@@ -10,7 +10,6 @@ export default function ApartmentCreatePage() {
     url: "/api/apartment/post",
     method: "POST",
     params: {
-      //code: apartment.code,
       name: apartment.name,
       address: apartment.address,
       city: apartment.city,
@@ -38,7 +37,7 @@ export default function ApartmentCreatePage() {
   }
 
   if (isSuccess) {
-    return <Navigate to="/apartment/list" />
+    return <Navigate to="/apartment/" />
   }
 
   return (

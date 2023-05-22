@@ -1,6 +1,5 @@
 const apartmentFixtures = {
     oneApartment:
-    [
       {
             "id": 1,
             "name": "Sierra Madre Villages",
@@ -9,8 +8,7 @@ const apartmentFixtures = {
             "state": "CA",
             "rooms": 109,
             "description": "Nice and New"      
-        }
-    ],
+        },
 
     threeApartments:
     [

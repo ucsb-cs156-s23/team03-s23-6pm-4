@@ -1,5 +1,6 @@
 import React from 'react';
-import ApartmentTable from 'main/components/Apartments/ApartmentTable';
+
+import ApartmentTable from "main/components/Apartments/ApartmentTable";
 import { apartmentFixtures } from 'fixtures/apartmentFixtures';
 
 export default {
@@ -19,15 +20,10 @@ Empty.args = {
     apartments: []
 };
 
-export const ThreeSubjectsNoButtons = Template.bind({});
+export const ThreeDates = Template.bind({});
 
-ThreeSubjectsNoButtons.args = {
-    apartments: apartmentFixtures.threeApartments,
-    showButtons: false
+ThreeDates.args = {
+    apartments: apartmentFixtures.threeDates
 };
 
-export const ThreeSubjectsWithButtons = Template.bind({});
-ThreeSubjectsWithButtons.args = {
-    apartments: apartmentFixtures.threeApartments,
-    showButtons: true
-};
+

@@ -114,7 +114,7 @@ describe("ApartmentCreatePage tests", () => {
         });
 
         expect(mockToast).toBeCalledWith("New apartment Created - id: 17 name: Sierra Madre Villages");
-        expect(mockNavigate).toBeCalledWith({ "to": "/apartment/list" });
+        expect(mockNavigate).toBeCalledWith({ "to": "/apartment/" });
     });
 
 

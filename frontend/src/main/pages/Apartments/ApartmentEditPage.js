@@ -30,7 +30,6 @@ export default function ApartmentEditPage() {
     },
     data: {
       name: apartment.name,
-      //code: apartment.code,
       address: apartment.address,
       city: apartment.city,
       state: apartment.state,
@@ -57,7 +56,7 @@ export default function ApartmentEditPage() {
   }
 
   if (isSuccess) {
-    return <Navigate to="/apartment/list" />
+    return <Navigate to="/apartment/" />
   }
 
   return (
@@ -65,7 +64,7 @@ export default function ApartmentEditPage() {
       <div className="pt-2">
         <h1>Edit Apartment</h1>
         {apartment &&
-          <ApartmentForm initialApartment={apartment} submitAction={onSubmit} buttonLabel="Update" />
+          <ApartmentForm initialContents={apartment} submitAction={onSubmit} buttonLabel="Update" />
         }
       </div>
     </BasicLayout>

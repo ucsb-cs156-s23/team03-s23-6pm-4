@@ -77,7 +77,6 @@ describe("ApartmentEditPage tests", () => {
             axiosMock.onGet("/api/apartment", { params: { id: 17 } }).reply(200, {
                 id: 17,
                 name: "Sierra Madre Villages",
-                //code: "sierra-madre-villages",
                 address: "555 Storke Road",
                 city: "Goleta",
                 state: "CA",
@@ -87,7 +86,6 @@ describe("ApartmentEditPage tests", () => {
             axiosMock.onPut('/api/apartment').reply(200, {
                 id: "17",
                 name: "El Dorado",
-                //code: "el-dorado",
                 address: "6667 El Colegio Road",
                 city: "Goleta",
                 state: "CA",
@@ -121,7 +119,6 @@ describe("ApartmentEditPage tests", () => {
 
             const idField = getByTestId("ApartmentForm-id");
             const nameField = getByTestId("ApartmentForm-name");
-            //const codeField = getByTestId("ApartmentForm-code");
             const addressField = getByTestId("ApartmentForm-address");
             const cityField = getByTestId("ApartmentForm-city");
             const stateField = getByTestId("ApartmentForm-state");
@@ -131,11 +128,10 @@ describe("ApartmentEditPage tests", () => {
 
             expect(idField).toHaveValue("17");
             expect(nameField).toHaveValue("Sierra Madre Villages");
-            //expect(codeField).toHaveValue("sierra-madre-villages");
             expect(addressField).toHaveValue("555 Storke Road");
             expect(cityField).toHaveValue("Goleta");
             expect(stateField).toHaveValue("CA");
-            expect(roomsField).toHaveValue("109");
+            expect(roomsField).toHaveValue(109);
             expect(descriptionField).toHaveValue("Nice and New");
         });
 
@@ -153,7 +149,6 @@ describe("ApartmentEditPage tests", () => {
 
             const idField = getByTestId("ApartmentForm-id");
             const nameField = getByTestId("ApartmentForm-name");
-            //const codeField = getByTestId("ApartmentForm-code");
             const addressField = getByTestId("ApartmentForm-address");
             const cityField = getByTestId("ApartmentForm-city");
             const stateField = getByTestId("ApartmentForm-state");
@@ -163,38 +158,35 @@ describe("ApartmentEditPage tests", () => {
 
             expect(idField).toHaveValue("17");
             expect(nameField).toHaveValue("Sierra Madre Villages");
-            //expect(codeField).toHaveValue("sierra-madre-villages");
             expect(addressField).toHaveValue("555 Storke Road");
             expect(cityField).toHaveValue("Goleta");
             expect(stateField).toHaveValue("CA");
-            expect(roomsField).toHaveValue("109");
+            expect(roomsField).toHaveValue(109);
             expect(descriptionField).toHaveValue("Nice and New");
 
             expect(submitButton).toBeInTheDocument();
 
             fireEvent.change(nameField, { target: { value: 'El Dorado' } });
-            //fireEvent.change(codeField, { target: { value: 'el-dorado' } });
             fireEvent.change(addressField, { target: { value: '6667 El Colegio Road' } });
             fireEvent.change(cityField, { target: { value: 'Goleta' } });
             fireEvent.change(stateField, { target: { value: 'CA' } });
-            fireEvent.change(roomsField, { target: { value: '50' } });
+            fireEvent.change(roomsField, { target: { value: 50 } });
             fireEvent.change(descriptionField, { target: { value: 'Tropicana but Nicer' } });
 
             fireEvent.click(submitButton);
 
             await waitFor(() => expect(mockToast).toBeCalled);
             expect(mockToast).toBeCalledWith("Apartment Updated - id: 17 name: El Dorado");
-            expect(mockNavigate).toBeCalledWith({ "to": "/apartment/list" });
+            expect(mockNavigate).toBeCalledWith({ "to": "/apartment/" });
 
             expect(axiosMock.history.put.length).toBe(1); // times called
             expect(axiosMock.history.put[0].params).toEqual({ id: 17 });
             expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
                 name: "El Dorado",
-                //code: "el-dorado",
                 address: "6667 El Colegio Road",
                 city: "Goleta",
                 state: "CA",
-                rooms: 50,
+                rooms: '50',
                 description: "Tropicana but Nicer"
             })); // posted object
 

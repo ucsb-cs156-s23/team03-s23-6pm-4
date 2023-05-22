@@ -9,7 +9,6 @@ const apartmentFixtures = {
             "rooms": 109,
             "description": "Nice and New"      
         },
-
     threeApartments:
     [
         {
@@ -21,7 +20,6 @@ const apartmentFixtures = {
             "rooms": 109,
             "description": "Nice and New"      
         },
-
         {
             "id": 2,
             "name": "El Dorado",
@@ -31,7 +29,6 @@ const apartmentFixtures = {
             "rooms": 50,
             "description": "Tropicana but Nicer"
         },
-
         {
             "id":3,
             "name": "San Joaquin North Villages",
@@ -40,7 +37,7 @@ const apartmentFixtures = {
             "state": "CA",
             "rooms": 166,
             "description": "Nice but Far"
-        },
+        }
     ]
 };
 

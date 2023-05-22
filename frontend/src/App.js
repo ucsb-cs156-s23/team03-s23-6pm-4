@@ -21,6 +21,11 @@ import RestaurantEditPage from "main/pages/Restaurants/RestaurantEditPage";
 import RestaurantIndexPage from "main/pages/Restaurants/RestaurantIndexPage";
 import RestaurantDetailsPage from "main/pages/Restaurants/RestaurantDetailsPage";
 
+import MusicCreatePage from "main/pages/Musics/MusicCreatePage";
+import MusicEditPage from "main/pages/Musics/MusicEditPage";
+import MusicIndexPage from "main/pages/Musics/MusicIndexPage";
+import MusicDetailsPage from "main/pages/Musics/MusicDetailsPage";
+
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";

@@ -1,4 +1,4 @@
-import { onDeleteSuccess, cellToAxiosParamsDelete, editCallback } from "main/utils/restaurantUtils";
+import { onDeleteSuccess, cellToAxiosParamsDelete, editCallback } from "main/utils/musicUtils";
 import mockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
@@ -11,7 +11,7 @@ jest.mock('react-toastify', () => {
     };
 });
 
-describe("restaurantUtils", () => {
+describe("musicUtils", () => {
 
     describe("onDeleteSuccess", () => {
 
@@ -43,7 +43,7 @@ describe("restaurantUtils", () => {
 
             // assert
             expect(result).toEqual({
-                url: "/api/restaurant",
+                url: "/api/music",
                 method: "DELETE",
                 params: { id: 17 }
             });

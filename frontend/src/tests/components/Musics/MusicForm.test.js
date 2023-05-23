@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import RestaurantForm from "main/components/Restaurants/RestaurantForm";
-import { restaurantFixtures } from "fixtures/restaurantFixtures";
+import MusicForm from "main/components/Musics/MusicForm";
+import { musicFixtures } from "fixtures/musicFixtures";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -13,17 +13,17 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedNavigate
 }));
 
-describe("RestaurantForm tests", () => {
+describe("MusicForm tests", () => {
     const queryClient = new QueryClient();
 
-    const expectedHeaders = ["Name","Description"];
-    const testId = "RestaurantForm";
+    const expectedHeaders = ["Title","Album","Artist","Genre"];
+    const testId = "MusicForm";
 
-    test("renders correctly with no initialRestaurant", async () => {
+    test("renders correctly with no initialContents", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <RestaurantForm />
+                    <MusicForm />
                 </Router>
             </QueryClientProvider>
         );
@@ -37,11 +37,11 @@ describe("RestaurantForm tests", () => {
 
     });
 
-    test("renders correctly when passing in initialRestaurant", async () => {
+    test("renders correctly when passing in initialContents", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <RestaurantForm initialRestaurant={restaurantFixtures.oneRestaurant} />
+                    <MusicForm initialContents={musicFixtures.oneMusic} />
                 </Router>
             </QueryClientProvider>
         );
@@ -62,7 +62,7 @@ describe("RestaurantForm tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <RestaurantForm />
+                    <MusicForm />
                 </Router>
             </QueryClientProvider>
         );

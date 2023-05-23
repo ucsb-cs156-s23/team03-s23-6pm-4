@@ -2,26 +2,26 @@ import React from 'react'
 import { useBackend } from 'main/utils/useBackend';
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import RestaurantTable from 'main/components/Restaurants/RestaurantTable';
+import MusicTable from 'main/components/Musics/MusicTable';
 import { useCurrentUser } from 'main/utils/currentUser'
 
-export default function RestaurantIndexPage() {
+export default function MusicIndexPage() {
 
   const currentUser = useCurrentUser();
 
-  const { data: restaurants, error: _error, status: _status } =
+  const { data: musics, error: _error, status: _status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      ["/api/restaurant/all"],
-      { method: "GET", url: "/api/restaurant/all" },
+      ["/api/music/all"],
+      { method: "GET", url: "/api/music/all" },
       []
     );
 
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Restaurants</h1>
-        <RestaurantTable restaurants={restaurants} currentUser={currentUser} />
+        <h1>Musics</h1>
+        <MusicTable musics={musics} currentUser={currentUser} />
       </div>
     </BasicLayout>
   )

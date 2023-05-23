@@ -1,6 +1,6 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { restaurantFixtures } from "fixtures/restaurantFixtures";
-import RestaurantTable from "main/components/Restaurants/RestaurantTable"
+import { musicFixtures } from "fixtures/musicFixtures";
+import MusicTable from "main/components/Musics/MusicTable"
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
@@ -23,7 +23,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={[]} currentUser={currentUser} />
+          <MusicTable musics={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -35,7 +35,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={[]} currentUser={currentUser} />
+          <MusicTable musics={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -48,7 +48,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={[]} currentUser={currentUser} />
+          <MusicTable musics={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -62,15 +62,15 @@ describe("UserTable tests", () => {
     const { getByText, getByTestId } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={restaurantFixtures.threeRestaurants} currentUser={currentUser} />
+          <MusicTable musics={musicFixtures.threeMusics} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
     );
 
-    const expectedHeaders = ["id", "Name", "Description"];
-    const expectedFields = ["id", "name", "description"];
-    const testId = "RestaurantTable";
+    const expectedHeaders = ["id", "Title", "Album", "Artist", "Genre"];
+    const expectedFields = ["id", "title", "album", "artist", "genre"];
+    const testId = "MusicTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = getByText(headerText);
@@ -106,20 +106,20 @@ describe("UserTable tests", () => {
     const { getByText, getByTestId } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={restaurantFixtures.threeRestaurants} currentUser={currentUser} />
+          <MusicTable musics={musicFixtures.threeMusics} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
     );
 
-    await waitFor(() => { expect(getByTestId(`RestaurantTable-cell-row-0-col-id`)).toHaveTextContent("2"); });
+    await waitFor(() => { expect(getByTestId(`MusicTable-cell-row-0-col-id`)).toHaveTextContent("2"); });
 
-    const editButton = getByTestId(`RestaurantTable-cell-row-0-col-Edit-button`);
+    const editButton = getByTestId(`MusicTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     
     fireEvent.click(editButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/restaurants/edit/2'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/musics/edit/2'));
 
   });
 
@@ -130,20 +130,20 @@ describe("UserTable tests", () => {
     const { getByText, getByTestId } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <RestaurantTable restaurants={restaurantFixtures.threeRestaurants} currentUser={currentUser} />
+          <MusicTable musics={musicFixtures.threeMusics} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
     );
 
-    await waitFor(() => { expect(getByTestId(`RestaurantTable-cell-row-0-col-id`)).toHaveTextContent("2"); });
+    await waitFor(() => { expect(getByTestId(`MusicTable-cell-row-0-col-id`)).toHaveTextContent("2"); });
 
-    const detailsButton = getByTestId(`RestaurantTable-cell-row-0-col-Details-button`);
+    const detailsButton = getByTestId(`MusicTable-cell-row-0-col-Details-button`);
     expect(detailsButton).toBeInTheDocument();
     
     fireEvent.click(detailsButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/restaurants/details/2'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/musics/details/2'));
   });
 
 

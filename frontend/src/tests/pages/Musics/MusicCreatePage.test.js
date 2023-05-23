@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent } from "@testing-library/react";
-import RestaurantCreatePage from "main/pages/Restaurants/RestaurantCreatePage";
+import MusicCreatePage from "main/pages/Musics/MusicCreatePage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -7,6 +7,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import MockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
@@ -28,9 +29,13 @@ jest.mock('react-router-dom', () => {
     };
 });
 
-describe("RestaurantCreatePage tests", () => {
+describe("MusicCreatePage tests", () => {
 
     const axiosMock =new AxiosMockAdapter(axios);
+    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither); 
+
+    //const axiosMock =new AxiosMockAdapter(axios);
 
     beforeEach(() => {
         axiosMock.reset();
@@ -44,7 +49,7 @@ describe("RestaurantCreatePage tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <RestaurantCreatePage />
+                    <MusicCreatePage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -53,32 +58,38 @@ describe("RestaurantCreatePage tests", () => {
     test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
 
         const queryClient = new QueryClient();
-        const Restaurant = {
-            id: 17,
-            name: "Freebirds",
-            description: "Best nachos in Isla Vista"
+        const Music = {
+            id: 3,
+            title: "Everything Goes On",
+            album: "Everything Goes On",
+            artist: "Porter Robinson",
+            genre: "EDM"
         };
 
-        axiosMock.onPost("/api/restaurant/post").reply( 202, Restaurant );
+        axiosMock.onPost("/api/music/post").reply( 202, Music );
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <RestaurantCreatePage />
+                    <MusicCreatePage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
 
         await waitFor(() => {
-            expect(getByTestId("RestaurantForm-name")).toBeInTheDocument();
+            expect(getByTestId("MusicForm-title")).toBeInTheDocument();
         });
 
-        const nameField = getByTestId("RestaurantForm-name");
-        const descriptionField = getByTestId("RestaurantForm-description");
-        const submitButton = getByTestId("RestaurantForm-submit");
+        const titleField = getByTestId("MusicForm-title");
+        const albumField = getByTestId("MusicForm-album");
+        const artistField = getByTestId("MusicForm-artist");
+        const genreField = getByTestId("MusicForm-genre");
+        const submitButton = getByTestId("MusicForm-submit");
 
-        fireEvent.change(nameField, { target: { value: 'Freebirds' } });
-        fireEvent.change(descriptionField, { target: { value: 'Best nachos in Isla Vista' } });
+        fireEvent.change(titleField, { target: { value: 'Everything Goes On' } });
+        fireEvent.change(albumField, { target: { value: 'Everything Goes On' } });
+        fireEvent.change(artistField, { target: { value: 'Porter Robinson' } });
+        fireEvent.change(genreField, { target: { value: 'EDM' } });
 
         expect(submitButton).toBeInTheDocument();
 
@@ -88,12 +99,15 @@ describe("RestaurantCreatePage tests", () => {
 
         expect(axiosMock.history.post[0].params).toEqual(
             {
-            "name": "Freebirds",
-            "description": "Best nachos in Isla Vista"
+            "title": "Everything Goes On",
+            "album": "Everything Goes On",
+            "artist": "Porter Robinson",
+            "genre": "EDM"
+
         });
 
-        expect(mockToast).toBeCalledWith("New Restaurant Created - id: 17 name: Freebirds");
-        expect(mockNavigate).toBeCalledWith({ "to": "/restaurants/list" });
+        expect(mockToast).toBeCalledWith("New Music Created - id: 3 title: Everything Goes On");
+        expect(mockNavigate).toBeCalledWith({ "to": "/musics/list" });
     });
 
 

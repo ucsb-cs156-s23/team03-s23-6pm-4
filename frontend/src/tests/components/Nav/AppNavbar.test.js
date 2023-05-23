@@ -308,6 +308,52 @@ describe("AppNavbar tests", () => {
         await findByTestId(/appnavbar-apartments-create/);
 
     });
+    
+    test("renders the musics menu correctly for a user", async () => {
+
+        const currentUser = currentUserFixtures.userOnly;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        const {getByTestId, findByTestId  } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await findByTestId("appnavbar-musics-dropdown");
+        const dropdown = getByTestId("appnavbar-musics-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await findByTestId("appnavbar-musics-list");
+
+    });
+
+    test("renders the musics menu correctly for an admin", async () => {
+
+        const currentUser = currentUserFixtures.adminUser;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        const {getByTestId, findByTestId  } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await findByTestId("appnavbar-musics-dropdown");
+        const dropdown = getByTestId("appnavbar-musics-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await findByTestId(/appnavbar-musics-create/);
+    });
+
 });
-
-

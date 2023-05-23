@@ -1,11 +1,11 @@
 import { fireEvent, queryByTestId, render, waitFor, screen } from "@testing-library/react";
-import RestaurantDetailsPage from "main/pages/Restaurants/RestaurantDetailsPage";
+import MusicDetailsPage from "main/pages/Musics/MusicDetailsPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { restaurantFixtures } from "fixtures/restaurantFixtures";
+import { musicFixtures } from "fixtures/musicFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -19,21 +19,27 @@ jest.mock('react-router-dom', () => ({
 }));
 
 
-describe("RestaurantDetailsPage tests", () => {
+describe("MusicDetailsPage tests", () => {
 
-    const axiosMock = new AxiosMockAdapter(axios);
+    const axiosMock =new AxiosMockAdapter(axios);
+    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither); 
 
-    const testId = "RestaurantTable";
+    //const axiosMock = new AxiosMockAdapter(axios);
+
+    const testId = "MusicTable";
 
     beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-        axiosMock.onGet("/api/restaurant", { params: { id: 3 } }).reply(200, {
-            id: 3,
-            name: "Free Birds",
-            description: "Burritos"
+        axiosMock.onGet("/api/music", { params: { id: 3 } }).reply(200, {
+            id: 6,
+            title: "Cupid",
+            album: "The Beginning",
+            artist: "Fifty Fifty",
+            genre: "Kpop"
         });
     });
 
@@ -42,7 +48,7 @@ describe("RestaurantDetailsPage tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <RestaurantDetailsPage />
+                    <MusicDetailsPage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -53,14 +59,16 @@ describe("RestaurantDetailsPage tests", () => {
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <RestaurantDetailsPage />
+                    <MusicDetailsPage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("3"); });
-        expect(getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("Free Birds");
-        expect(getByTestId(`${testId}-cell-row-0-col-description`)).toHaveTextContent("Burritos");
+        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("6"); });
+        expect(getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent("Cupid");
+        expect(getByTestId(`${testId}-cell-row-0-col-album`)).toHaveTextContent("The Beginning");
+        expect(getByTestId(`${testId}-cell-row-0-col-artist`)).toHaveTextContent("Fifty Fifty");
+        expect(getByTestId(`${testId}-cell-row-0-col-genre`)).toHaveTextContent("Kpop");
 
         expect(screen.queryByText("Delete")).not.toBeInTheDocument();
         expect(screen.queryByText("Edit")).not.toBeInTheDocument();

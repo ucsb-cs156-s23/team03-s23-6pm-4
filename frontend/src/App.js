@@ -21,6 +21,11 @@ import RestaurantEditPage from "main/pages/Restaurants/RestaurantEditPage";
 import RestaurantIndexPage from "main/pages/Restaurants/RestaurantIndexPage";
 import RestaurantDetailsPage from "main/pages/Restaurants/RestaurantDetailsPage";
 
+import MusicCreatePage from "main/pages/Musics/MusicCreatePage";
+import MusicEditPage from "main/pages/Musics/MusicEditPage";
+import MusicIndexPage from "main/pages/Musics/MusicIndexPage";
+import MusicDetailsPage from "main/pages/Musics/MusicDetailsPage";
+
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -62,7 +67,7 @@ function App() {
               <Route exact path="/restaurants/create" element={<RestaurantCreatePage />} />
               <Route exact path="/restaurants/edit/:id" element={<RestaurantEditPage />} />
               <Route exact path="/restaurants/details/:id" element={<RestaurantDetailsPage />} />
-              <Route exact path="/restaurants/" element={<RestaurantIndexPage />} /> 
+              <Route exact path="/restaurants/list" element={<RestaurantIndexPage />} /> 
             </>
           )
         } 
@@ -72,6 +77,17 @@ function App() {
             <>
               <Route exact path="/ucsbdates/edit/:id" element={<UCSBDatesEditPage />} />
               <Route exact path="/ucsbdates/create" element={<UCSBDatesCreatePage />} />
+            </>
+          )
+        }
+
+        {
+          hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/musics/create" element={<MusicCreatePage />} />
+              <Route exact path="/musics/edit/:id" element={<MusicEditPage />} />
+              <Route exact path="/musics/details/:id" element={<MusicDetailsPage />} />
+              <Route exact path="/musics/list" element={<MusicIndexPage />} /> 
             </>
           )
         }

@@ -1,25 +1,25 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
-import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/restaurantUtils"
+import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/musicUtils"
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
-export default function RestaurantTable({
-    restaurants,
+export default function MusicTable({
+    musics,
     showButtons = true,
-    testIdPrefix = "RestaurantTable",
+    testIdPrefix = "MusicTable",
     currentUser
     }) {
 
     const navigate = useNavigate();
  
     const editCallback = (cell) => {
-        navigate(`/restaurants/edit/${cell.row.values.id}`)
+        navigate(`/musics/edit/${cell.row.values.id}`)
     }
 
     const detailsCallback = (cell) => {
-        navigate(`/restaurants/details/${cell.row.values.id}`)
+        navigate(`/musics/details/${cell.row.values.id}`)
     }
 
     // Stryker disable all : hard to test for query caching
@@ -27,7 +27,7 @@ export default function RestaurantTable({
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
-        ["/api/restaurant/all"]
+        ["/api/music/all"]
     );
     // Stryker enable all 
 
@@ -42,12 +42,20 @@ export default function RestaurantTable({
         },
 
         {
-            Header: 'Name',
-            accessor: 'name',
+            Header: 'Title',
+            accessor: 'title',
         },
         {
-            Header: 'Description',
-            accessor: 'description',
+            Header: 'Album',
+            accessor: 'album',
+        },
+        {
+            Header: 'Artist',
+            accessor: 'artist',
+        },
+        {
+            Header: 'Genre',
+            accessor: 'genre',
         }
     ];
 
@@ -61,10 +69,10 @@ export default function RestaurantTable({
     
     // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
     const memoizedColumns = React.useMemo(() => columns, [columns]);
-    const memoizedRestaurants = React.useMemo(() => restaurants, [restaurants]);
+    const memoizedMusics = React.useMemo(() => musics, [musics]);
 
     return <OurTable
-        data={memoizedRestaurants}
+        data={memoizedMusics}
         columns={memoizedColumns}
         testid={testIdPrefix}
     />;

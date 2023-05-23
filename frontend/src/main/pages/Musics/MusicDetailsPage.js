@@ -1,20 +1,20 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
-import RestaurantTable from 'main/components/Restaurants/RestaurantTable';
-import { restaurantUtils } from 'main/utils/restaurantUtils';
+import MusicTable from 'main/components/Musics/MusicTable';
+import { musicUtils } from 'main/utils/musicUtils';
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
-export default function RestaurantDetailsPage() {
+export default function MusicDetailsPage() {
   let { id } = useParams();
 
 
-  const { data: restaurant, error, status } =
+  const { data: music, error, status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      [`/api/restaurant?id=${id}`],
+      [`/api/music?id=${id}`],
       {  // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
         method: "GET",
-        url: `/api/restaurant`,
+        url: `/api/music`,
         params: {
           id
         }
@@ -24,8 +24,8 @@ export default function RestaurantDetailsPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Restaurant Details</h1>
-        {restaurant && <RestaurantTable restaurants={[restaurant]} showButtons={false} />}
+        <h1>Music Details</h1>
+        {music && <MusicTable musics={[music]} showButtons={false} />}
       </div>
     </BasicLayout>
   )

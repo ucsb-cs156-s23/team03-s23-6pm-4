@@ -1,20 +1,20 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
-import RestaurantForm from "main/components/Restaurants/RestaurantForm";
+import MusicForm from "main/components/Musics/MusicForm";
 import { Navigate } from 'react-router-dom'
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
-export default function RestaurantEditPage() {
+export default function MusicEditPage() {
   let { id } = useParams();
 
-  const { data: restaurant, error, status } =
+  const { data: music, error, status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      [`/api/restaurant?id=${id}`],
+      [`/api/music?id=${id}`],
       {  // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
         method: "GET",
-        url: `/api/restaurant`,
+        url: `/api/music`,
         params: {
           id
         }
@@ -22,27 +22,29 @@ export default function RestaurantEditPage() {
     );
 
 
-  const objectToAxiosPutParams = (restaurant) => ({
-    url: "/api/restaurant",
+  const objectToAxiosPutParams = (music) => ({
+    url: "/api/music",
     method: "PUT",
     params: {
-      id: restaurant.id,
+      id: music.id,
     },
     data: {
-      name: restaurant.name,
-      description: restaurant.description
+      title: music.title,
+      album: music.album,
+      artist: music.artist,
+      genre: music.genre
     }
   });
 
-  const onSuccess = (restaurant) => {
-    toast(`Restaurant Updated - id: ${restaurant.id} name: ${restaurant.name}`);
+  const onSuccess = (music) => {
+    toast(`Music Updated - id: ${music.id} title: ${music.title}`);
   }
 
   const mutation = useBackendMutation(
     objectToAxiosPutParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    [`/api/restaurant?id=${id}`]
+    [`/api/music?id=${id}`]
   );
 
   const { isSuccess } = mutation
@@ -52,15 +54,15 @@ export default function RestaurantEditPage() {
   }
 
   if (isSuccess) {
-    return <Navigate to="/restaurants/list" />
+    return <Navigate to="/musics/list" />
   }
 
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Edit Restaurant</h1>
-        {restaurant &&
-          <RestaurantForm initialRestaurant={restaurant} submitAction={onSubmit} buttonLabel="Update" />
+        <h1>Edit Music</h1>
+        {music &&
+          <MusicForm initialContents={music} submitAction={onSubmit} buttonLabel="Update" />
         }
       </div>
     </BasicLayout>

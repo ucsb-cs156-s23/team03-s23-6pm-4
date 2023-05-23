@@ -34,7 +34,7 @@ describe("ApartmentDetailsPage tests", () => {
     };
 
     test("renders without crashing", () => {
-        beforeEach();
+        // beforeEach();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments").reply(200, []);
 
@@ -48,7 +48,7 @@ describe("ApartmentDetailsPage tests", () => {
     });
 
     test("loads the correct fields without buttons", async () => {
-        beforeEach();
+        // beforeEach();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments").reply(200, apartmentFixtures.oneApartment);
 

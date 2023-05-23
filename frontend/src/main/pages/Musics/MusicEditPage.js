@@ -29,13 +29,15 @@ export default function MusicEditPage() {
       id: music.id,
     },
     data: {
-      name: music.name,
-      description: music.description
+      title: music.title,
+      album: music.album,
+      artist: music.artist,
+      genre: music.genre
     }
   });
 
   const onSuccess = (music) => {
-    toast(`Music Updated - id: ${music.id} name: ${music.name}`);
+    toast(`Music Updated - id: ${music.id} title: ${music.title}`);
   }
 
   const mutation = useBackendMutation(
@@ -60,7 +62,7 @@ export default function MusicEditPage() {
       <div className="pt-2">
         <h1>Edit Music</h1>
         {music &&
-          <MusicForm initialMusic={music} submitAction={onSubmit} buttonLabel="Update" />
+          <MusicForm initialContents={music} submitAction={onSubmit} buttonLabel="Update" />
         }
       </div>
     </BasicLayout>

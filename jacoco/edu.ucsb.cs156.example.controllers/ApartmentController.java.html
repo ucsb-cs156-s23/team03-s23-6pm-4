@@ -21,12 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-
 @Api(description = &quot;Apartment&quot;)
-@RequestMapping(&quot;/api/apartment&quot;)
+@RequestMapping(&quot;/api/apartments&quot;)
 @RestController
-<span class="fc" id="L28">@Slf4j</span>
-<span class="fc" id="L29">public class ApartmentController extends ApiController {</span>
+<span class="fc" id="L27">@Slf4j</span>
+<span class="fc" id="L28">public class ApartmentController extends ApiController {</span>
 
     @Autowired
     ApartmentRepository apartmentRepository;
@@ -35,26 +34,25 @@ import javax.validation.Valid;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Apartment&gt; allApartments() {
-<span class="fc" id="L38">        Iterable&lt;Apartment&gt; apartments = apartmentRepository.findAll();</span>
-<span class="fc" id="L39">        return apartments;</span>
+<span class="fc" id="L37">        Iterable&lt;Apartment&gt; apartments = apartmentRepository.findAll();</span>
+<span class="fc" id="L38">        return apartments;</span>
     }
 
     @ApiOperation(value = &quot;Get a single apartment&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
     public Apartment getById(
-            @ApiParam(&quot;code&quot;) @RequestParam String code) {
-<span class="fc" id="L47">        Apartment apartment = apartmentRepository.findById(code)</span>
-<span class="fc" id="L48">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, code));</span>
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L46">        Apartment apartment = apartmentRepository.findById(id)</span>
+<span class="fc" id="L47">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, id));</span>
 
-<span class="fc" id="L50">        return apartment;</span>
+<span class="fc" id="L49">        return apartment;</span>
     }
 
     @ApiOperation(value = &quot;Create a new apartment&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/post&quot;)
     public Apartment postApartment(
-        @ApiParam(&quot;code&quot;) @RequestParam String code,
         @ApiParam(&quot;name&quot;) @RequestParam String name,
         @ApiParam(&quot;address&quot;) @RequestParam String address,
         @ApiParam(&quot;city&quot;) @RequestParam String city,
@@ -64,53 +62,51 @@ import javax.validation.Valid;
         )
         {
 
-<span class="fc" id="L67">        Apartment apartment = new Apartment();</span>
-<span class="fc" id="L68">        apartment.setCode(code);</span>
-<span class="fc" id="L69">        apartment.setName(name);</span>
-<span class="fc" id="L70">        apartment.setAddress(address);</span>
-<span class="fc" id="L71">        apartment.setCity(city);</span>
-<span class="fc" id="L72">        apartment.setState(state);</span>
-<span class="fc" id="L73">        apartment.setRooms(rooms);</span>
-<span class="fc" id="L74">        apartment.setDescription(description);</span>
+<span class="fc" id="L65">        Apartment apartment = new Apartment();</span>
+<span class="fc" id="L66">        apartment.setName(name);</span>
+<span class="fc" id="L67">        apartment.setAddress(address);</span>
+<span class="fc" id="L68">        apartment.setCity(city);</span>
+<span class="fc" id="L69">        apartment.setState(state);</span>
+<span class="fc" id="L70">        apartment.setRooms(rooms);</span>
+<span class="fc" id="L71">        apartment.setDescription(description);</span>
 
-<span class="fc" id="L76">        Apartment savedApartment = apartmentRepository.save(apartment);</span>
+<span class="fc" id="L73">        Apartment savedApartment = apartmentRepository.save(apartment);</span>
 
-<span class="fc" id="L78">        return savedApartment;</span>
+<span class="fc" id="L75">        return savedApartment;</span>
     }
 
     @ApiOperation(value = &quot;Delete an Apartment&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deleteApartment(
-            @ApiParam(&quot;code&quot;) @RequestParam String code) {
-<span class="fc" id="L86">        Apartment apartment = apartmentRepository.findById(code)</span>
-<span class="fc" id="L87">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, code));</span>
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L83">        Apartment apartment = apartmentRepository.findById(id)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, id));</span>
 
-<span class="fc" id="L89">        apartmentRepository.delete(apartment);</span>
-<span class="fc" id="L90">        return genericMessage(&quot;Apartment with id %s deleted&quot;.formatted(code));</span>
+<span class="fc" id="L86">        apartmentRepository.delete(apartment);</span>
+<span class="fc" id="L87">        return genericMessage(&quot;Apartment with id %s deleted&quot;.formatted(id));</span>
     }
 
     @ApiOperation(value = &quot;Update a single apartment&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;&quot;)
-    public Apartment updateCommons(
-            @ApiParam(&quot;code&quot;) @RequestParam String code,
+    public Apartment updateApartments(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id,
             @RequestBody @Valid Apartment incoming) {
 
-<span class="fc" id="L100">        Apartment apartment = apartmentRepository.findById(code)</span>
-<span class="fc" id="L101">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, code));</span>
+<span class="fc" id="L97">        Apartment apartment = apartmentRepository.findById(id)</span>
+<span class="fc" id="L98">                .orElseThrow(() -&gt; new EntityNotFoundException(Apartment.class, id));</span>
 
+<span class="fc" id="L100">        apartment.setName(incoming.getName());  </span>
+<span class="fc" id="L101">        apartment.setAddress(incoming.getAddress());</span>
+<span class="fc" id="L102">        apartment.setCity(incoming.getCity());</span>
+<span class="fc" id="L103">        apartment.setState(incoming.getState());</span>
+<span class="fc" id="L104">        apartment.setRooms(incoming.getRooms());</span>
+<span class="fc" id="L105">        apartment.setDescription(incoming.getDescription());</span>
 
-<span class="fc" id="L104">        apartment.setName(incoming.getName());  </span>
-<span class="fc" id="L105">        apartment.setAddress(incoming.getAddress());</span>
-<span class="fc" id="L106">        apartment.setCity(incoming.getCity());</span>
-<span class="fc" id="L107">        apartment.setState(incoming.getState());</span>
-<span class="fc" id="L108">        apartment.setRooms(incoming.getRooms());</span>
-<span class="fc" id="L109">        apartment.setDescription(incoming.getDescription());</span>
+<span class="fc" id="L107">        apartmentRepository.save(apartment);</span>
 
-<span class="fc" id="L111">        apartmentRepository.save(apartment);</span>
-
-<span class="fc" id="L113">        return apartment;</span>
+<span class="fc" id="L109">        return apartment;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

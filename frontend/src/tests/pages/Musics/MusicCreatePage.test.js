@@ -1,28 +1,32 @@
-import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import MusicCreatePage from "main/pages/Musics/MusicCreatePage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import mockConsole from "jest-mock-console";
 
-import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import MockConsole from "jest-mock-console";
 
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigate
-}));
-
-const mockAdd = jest.fn();
-jest.mock('main/utils/musicUtils', () => {
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
     return {
         __esModule: true,
-        musicUtils: {
-            add: () => { return mockAdd(); }
-        }
-    }
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+    const originalModule = jest.requireActual('react-router-dom');
+    return {
+        __esModule: true,
+        ...originalModule,
+        Navigate: (x) => { mockNavigate(x); return null; }
+    };
 });
 
 describe("MusicCreatePage tests", () => {
@@ -31,8 +35,17 @@ describe("MusicCreatePage tests", () => {
     axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither); 
 
-    const queryClient = new QueryClient();
+    //const axiosMock =new AxiosMockAdapter(axios);
+
+    beforeEach(() => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    });
+
     test("renders without crashing", () => {
+        const queryClient = new QueryClient();
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -42,62 +55,61 @@ describe("MusicCreatePage tests", () => {
         );
     });
 
-    test("redirects to /musics on submit", async () => {
+    test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
 
-        const restoreConsole = mockConsole();
+        const queryClient = new QueryClient();
+        const Music = {
+            id: 3,
+            title: "Everything Goes On",
+            album: "Everything Goes On",
+            artist: "Porter Robinson",
+            genre: "EDM"
+        };
 
-        mockAdd.mockReturnValue({
-            "music": {
-                id: 3,
-                title: "Everything Goes On",
-                album: "Everything Goes On",
-                artist: "Porter Robinson",
-                genre: "Pop"
-            }
-        });
+        axiosMock.onPost("/api/music/post").reply( 202, Music );
 
-        render(
+        const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <MusicCreatePage />
                 </MemoryRouter>
             </QueryClientProvider>
-        )
+        );
 
-        const titleInput = screen.getByLabelText("Title");
-        expect(titleInput).toBeInTheDocument();
-
-        const authorInput = screen.getByLabelText("Album");
-        expect(authorInput).toBeInTheDocument();
-
-        const descriptionInput = screen.getByLabelText("Artist");
-        expect(descriptionInput).toBeInTheDocument();
-
-        const genreInput = screen.getByLabelText("Genre");
-        expect(genreInput).toBeInTheDocument();
-
-        const createButton = screen.getByText("Create");
-        expect(createButton).toBeInTheDocument();
-            
-        await act(async () => {
-            fireEvent.change(titleInput, { target: { value: 'Everything Goes On' } })
-            fireEvent.change(authorInput, { target: { value: 'Everything Goes On' } })
-            fireEvent.change(descriptionInput, { target: { value: 'Porter Robinson' } })
-            fireEvent.change(genreInput, { target: { value: 'Pop' } })
-            fireEvent.click(createButton);
+        await waitFor(() => {
+            expect(getByTestId("MusicForm-title")).toBeInTheDocument();
         });
 
-        await waitFor(() => expect(mockAdd).toHaveBeenCalled());
-        await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/musics"));
+        const titleField = getByTestId("MusicForm-title");
+        const albumField = getByTestId("MusicForm-album");
+        const artistField = getByTestId("MusicForm-artist");
+        const genreField = getByTestId("MusicForm-genre");
+        const submitButton = getByTestId("MusicForm-submit");
 
-        // assert - check that the console.log was called with the expected message
-        expect(console.log).toHaveBeenCalled();
-        const message = console.log.mock.calls[0][0];
-        const expectedMessage =  `createdMusic: {"music":{"id":3,"title":"Everything Goes On","album":"Everything Goes On","artist":"Porter Robinson","genre":"Pop"}`
-        expect(message).toMatch(expectedMessage);
-        restoreConsole();
+        fireEvent.change(titleField, { target: { value: 'Everything Goes On' } });
+        fireEvent.change(albumField, { target: { value: 'Everything Goes On' } });
+        fireEvent.change(artistField, { target: { value: 'Porter Robinson' } });
+        fireEvent.change(genreField, { target: { value: 'EDM' } });
 
+        expect(submitButton).toBeInTheDocument();
+
+        fireEvent.click(submitButton);
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(axiosMock.history.post[0].params).toEqual(
+            {
+            "title": "Everything Goes On",
+            "album": "Everything Goes On",
+            "artist": "Porter Robinson",
+            "genre": "EDM"
+
+        });
+
+        expect(mockToast).toBeCalledWith("New Music Created - id: 3 title: Everything Goes On");
+        expect(mockNavigate).toBeCalledWith({ "to": "/musics/list" });
     });
+
 
 });
 

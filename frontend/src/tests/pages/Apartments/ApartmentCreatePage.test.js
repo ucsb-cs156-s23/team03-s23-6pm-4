@@ -56,7 +56,6 @@ describe("ApartmentCreatePage tests", () => {
         const apartment = {
             id: 17,
             name: "Sierra Madre Villages",
-            //code: "sierra-madre-villages",
             address: "555 Storke Road",
             city: "Goleta",
             state: "CA",
@@ -64,7 +63,7 @@ describe("ApartmentCreatePage tests", () => {
             description: "Nice and New"
         };
 
-        axiosMock.onPost("/api/apartment/post").reply( 202, apartment );
+        axiosMock.onPost("/api/apartments/post").reply( 202, apartment );
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -75,11 +74,10 @@ describe("ApartmentCreatePage tests", () => {
         );
 
         await waitFor(() => {
-            expect(getByTestId("ApartmentForm-name")).toBeInTheDocument(); //not confident in replacing quarterYYYYQ with name here
+            expect(getByTestId("ApartmentForm-name")).toBeInTheDocument();
         });
 
         const nameField = getByTestId("ApartmentForm-name");
-        //const codeField = getByTestId("ApartmentForm-code");
         const addressField = getByTestId("ApartmentForm-address");
         const cityField = getByTestId("ApartmentForm-city");
         const stateField = getByTestId("ApartmentForm-state");
@@ -88,14 +86,12 @@ describe("ApartmentCreatePage tests", () => {
         const submitButton = getByTestId("ApartmentForm-submit");
 
         fireEvent.change(nameField, { target: { value: 'Sierra Madre Villages' } });
-        //fireEvent.change(codeField, { target: { value: 'sierra-madre-villages' } });
         fireEvent.change(addressField, { target: { value: '555 Storke Road' } });
         fireEvent.change(cityField, { target: { value: 'Goleta' } });
         fireEvent.change(stateField, { target: { value: 'CA' } });
         fireEvent.change(roomsField, { target: { value: '109' } });
         fireEvent.change(descriptionField, { target: { value: 'Nice and New' } });
         
-
         expect(submitButton).toBeInTheDocument();
 
         fireEvent.click(submitButton);
@@ -105,7 +101,6 @@ describe("ApartmentCreatePage tests", () => {
         expect(axiosMock.history.post[0].params).toEqual(
             {
             "name": "Sierra Madre Villages",
-            //"code": "sierra-madre-villages",
             "address": "555 Storke Road",
             "city": "Goleta",
             "state": "CA",
@@ -114,7 +109,7 @@ describe("ApartmentCreatePage tests", () => {
         });
 
         expect(mockToast).toBeCalledWith("New apartment Created - id: 17 name: Sierra Madre Villages");
-        expect(mockNavigate).toBeCalledWith({ "to": "/apartment/" });
+        expect(mockNavigate).toBeCalledWith({ "to": "/apartments/list" });
     });
 
 

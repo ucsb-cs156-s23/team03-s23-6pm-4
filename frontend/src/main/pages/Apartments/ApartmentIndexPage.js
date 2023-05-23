@@ -12,8 +12,8 @@ export default function ApartmentIndexPage() {
   const { data: apartments, error: _error, status: _status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      ["/api/apartment/all"],
-      { method: "GET", url: "/api/apartment/all" },
+      ["/api/apartments/all"],
+      { method: "GET", url: "/api/apartments/all" },
       []
     );
 

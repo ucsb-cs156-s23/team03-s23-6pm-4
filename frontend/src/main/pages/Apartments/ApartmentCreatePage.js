@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export default function ApartmentCreatePage() {
 
   const objectToAxiosParams = (apartment) => ({
-    url: "/api/apartment/post",
+    url: "/api/apartments/post",
     method: "POST",
     params: {
       name: apartment.name,
@@ -27,7 +27,7 @@ export default function ApartmentCreatePage() {
     objectToAxiosParams,
      { onSuccess }, 
      // Stryker disable next-line all : hard to set up test for caching
-     ["/api/apartment/all"]
+     ["/api/apartments/all"]
      );
 
   const { isSuccess } = mutation
@@ -37,7 +37,7 @@ export default function ApartmentCreatePage() {
   }
 
   if (isSuccess) {
-    return <Navigate to="/apartment/" />
+    return <Navigate to="/apartments/list" />
   }
 
   return (

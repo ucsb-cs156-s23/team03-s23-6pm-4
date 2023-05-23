@@ -40,24 +40,24 @@ public class ApartmentControllerTests extends ControllerTestCase {
         @MockBean
         UserRepository userRepository;
 
-        // Authorization tests for /api/apartment/admin/all
+        // Authorization tests for /api/apartments/admin/all
 
         @Test
         public void logged_out_users_cannot_get_all() throws Exception {
-                mockMvc.perform(get("/api/apartment/all"))
+                mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().is(403)); // logged out users can't get all
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_users_can_get_all() throws Exception {
-                mockMvc.perform(get("/api/apartment/all"))
+                mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().is(200)); // logged
         }
 
         @Test
         public void logged_out_users_cannot_get_by_id() throws Exception {
-                mockMvc.perform(get("/api/apartment?id=7"))
+                mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().is(403)); // logged out users can't get by id
         }
 
@@ -66,14 +66,14 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
         @Test
         public void logged_out_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/apartment/post"))
+                mockMvc.perform(post("/api/apartments/post"))
                                 .andExpect(status().is(403));
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_regular_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/apartment/post"))
+                mockMvc.perform(post("/api/apartments/post"))
                                 .andExpect(status().is(403)); // only admins can post
         }
 
@@ -97,7 +97,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
                 when(apartmentRepository.findById(eq(7L))).thenReturn(Optional.of(apartment));
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
@@ -117,7 +117,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
                 when(apartmentRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
@@ -158,7 +158,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
                 when(apartmentRepository.findAll()).thenReturn(expectedApartments);
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment/all"))
+                MvcResult response = mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
@@ -187,7 +187,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/apartment/post?name=San Joaquin North Villages&address=650 Storke Road&city=Goleta&state=CA&rooms=166&description=Nice but Far")
+                                post("/api/apartments/post?name=San Joaquin North Villages&address=650 Storke Road&city=Goleta&state=CA&rooms=166&description=Nice but Far")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -216,7 +216,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/apartment?id=15")
+                                delete("/api/apartments?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -238,7 +238,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/apartment?id=15")
+                                delete("/api/apartments?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isNotFound()).andReturn();
 
@@ -277,7 +277,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/apartment?id=67")
+                                put("/api/apartments?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -311,7 +311,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/apartment?id=67")
+                                put("/api/apartments?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)

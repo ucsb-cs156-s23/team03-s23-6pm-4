@@ -11,10 +11,10 @@ export default function ApartmentEditPage() {
   const { data: apartment, error, status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      [`/api/apartment?id=${id}`],
+      [`/api/apartments?id=${id}`],
       {  // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
         method: "GET",
-        url: `/api/apartment`,
+        url: `/api/apartments`,
         params: {
           id
         }
@@ -23,7 +23,7 @@ export default function ApartmentEditPage() {
 
 
   const objectToAxiosPutParams = (apartment) => ({
-    url: "/api/apartment",
+    url: "/api/apartments",
     method: "PUT",
     params: {
       id: apartment.id,
@@ -46,7 +46,7 @@ export default function ApartmentEditPage() {
     objectToAxiosPutParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    [`/api/apartment?id=${id}`]
+    [`/api/apartments?id=${id}`]
   );
 
   const { isSuccess } = mutation
@@ -56,7 +56,7 @@ export default function ApartmentEditPage() {
   }
 
   if (isSuccess) {
-    return <Navigate to="/apartment/" />
+    return <Navigate to="/apartments/list" />
   }
 
   return (

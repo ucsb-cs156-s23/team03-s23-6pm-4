@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { apartmentFixtures } from "fixtures/apartmentFixtures";
 import ApartmentTable from "main/components/Apartments/ApartmentTable"
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -115,7 +115,31 @@ describe("UserTable tests", () => {
     
     fireEvent.click(editButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartment/edit/1'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartments/edit/1'));
+
+  });
+
+  test("Details button navigates to the details page", async () => {
+
+    const currentUser = currentUserFixtures.adminUser;
+
+    const { getByText, getByTestId } = render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ApartmentTable apartments={apartmentFixtures.threeApartments} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+
+    await waitFor(() => { expect(getByTestId(`ApartmentTable-cell-row-0-col-id`)).toHaveTextContent("1"); });
+
+    const detailsButton = getByTestId(`ApartmentTable-cell-row-0-col-Details-button`);
+    expect(detailsButton).toBeInTheDocument();
+    
+    fireEvent.click(detailsButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/apartments/details/1'));
 
   });
 

@@ -44,7 +44,7 @@ describe("ApartmentIndexPage tests", () => {
     test("renders without crashing for regular user", () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").reply(200, []);
+        axiosMock.onGet("/api/apartments/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -60,7 +60,7 @@ describe("ApartmentIndexPage tests", () => {
     test("renders without crashing for admin user", () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").reply(200, []);
+        axiosMock.onGet("/api/s/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -76,7 +76,7 @@ describe("ApartmentIndexPage tests", () => {
     test("renders three dates without crashing for regular user", async () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").reply(200, apartmentFixtures.threeApartments);
+        axiosMock.onGet("/api/apartments/all").reply(200, apartmentFixtures.threeApartments);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -95,7 +95,7 @@ describe("ApartmentIndexPage tests", () => {
     test("renders three dates without crashing for admin user", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").reply(200, apartmentFixtures.threeApartments);
+        axiosMock.onGet("/api/apartments/all").reply(200, apartmentFixtures.threeApartments);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -115,7 +115,7 @@ describe("ApartmentIndexPage tests", () => {
         setupUserOnly();
 
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").timeout();
+        axiosMock.onGet("/api/apartments/all").timeout();
 
         const restoreConsole = mockConsole();
 
@@ -130,7 +130,7 @@ describe("ApartmentIndexPage tests", () => {
         await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
 
         const errorMessage = console.error.mock.calls[0][0];
-        expect(errorMessage).toMatch("Error communicating with backend via GET on /api/apartment/all");
+        expect(errorMessage).toMatch("Error communicating with backend via GET on /api/apartments/all");
         restoreConsole();
 
         expect(queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
@@ -140,8 +140,8 @@ describe("ApartmentIndexPage tests", () => {
         setupAdminUser();
 
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/apartment/all").reply(200, apartmentFixtures.threeApartments);
-        axiosMock.onDelete("/api/apartment").reply(200, "Apartment with id 1 was deleted");
+        axiosMock.onGet("/api/apartments/all").reply(200, apartmentFixtures.threeApartments);
+        axiosMock.onDelete("/api/apartments").reply(200, "Apartment with id 1 was deleted");
 
 
         const { getByTestId } = render(

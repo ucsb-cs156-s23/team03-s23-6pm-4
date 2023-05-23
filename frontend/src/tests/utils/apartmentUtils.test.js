@@ -43,7 +43,7 @@ describe("ApartmentUtils", () => {
 
             // assert
             expect(result).toEqual({
-                url: "/api/apartment",
+                url: "/api/apartments",
                 method: "DELETE",
                 params: { id: 17 }
             });

@@ -5,10 +5,77 @@ import { MemoryRouter } from "react-router-dom";
 
 import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { apartmentFixtures } from "fixtures/apartmentFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import mockConsole from "jest-mock-console";
 
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
 
+describe("ApartmentDetailsPage tests", () => {
+
+    const axiosMock = new AxiosMockAdapter(axios);
+
+    const testId = "ApartmentTable";
+
+    beforeEach = () => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    };
+
+    test("renders without crashing", () => {
+        beforeEach();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/apartments").reply(200, []);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <ApartmentDetailsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    });
+
+    test("loads the correct fields without buttons", async () => {
+        beforeEach();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/apartments").reply(200, apartmentFixtures.oneApartment);
+
+        const { getByTestId } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <ApartmentDetailsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
+        expect(getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("Sierra Madre Villages");
+        expect(getByTestId(`${testId}-cell-row-0-col-address`)).toHaveTextContent("555 Storke Road");
+        expect(getByTestId(`${testId}-cell-row-0-col-city`)).toHaveTextContent("Goleta");
+        expect(getByTestId(`${testId}-cell-row-0-col-state`)).toHaveTextContent("CA");
+        expect(getByTestId(`${testId}-cell-row-0-col-rooms`)).toHaveTextContent("109");
+        expect(getByTestId(`${testId}-cell-row-0-col-description`)).toHaveTextContent("Nice and New");
+
+        expect(screen.queryByText("Delete")).not.toBeInTheDocument();
+        expect(screen.queryByText("Edit")).not.toBeInTheDocument();
+        expect(screen.queryByText("Details")).not.toBeInTheDocument();
+    });
+
+});
+
+/*
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -17,7 +84,6 @@ jest.mock('react-router-dom', () => ({
     }),
     useNavigate: () => mockNavigate
 }));
-
 
 describe("ApartmentDetailsPage tests", () => {
 
@@ -52,7 +118,7 @@ describe("ApartmentDetailsPage tests", () => {
         );
     });
 
-    test("loads the correct fields", async () => {
+    test("loads the correct fields without buttons", async () => {
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -69,25 +135,14 @@ describe("ApartmentDetailsPage tests", () => {
         expect(getByTestId(`${testId}-cell-row-0-col-state`)).toHaveTextContent("CA");
         expect(getByTestId(`${testId}-cell-row-0-col-rooms`)).toHaveTextContent("109");
         expect(getByTestId(`${testId}-cell-row-0-col-description`)).toHaveTextContent("Nice and New");
-    });
 
-    test("loads without buttons", async () => {
-
-        const { getByTestId } = render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <ApartmentDetailsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        await waitFor(() => { expect(screen.queryByText("Delete")).not.toBeInTheDocument(); });
+        expect(screen.queryByText("Delete")).not.toBeInTheDocument();
         expect(screen.queryByText("Edit")).not.toBeInTheDocument();
         expect(screen.queryByText("Details")).not.toBeInTheDocument();
     });
 
 });
-
+*/
 /*
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {

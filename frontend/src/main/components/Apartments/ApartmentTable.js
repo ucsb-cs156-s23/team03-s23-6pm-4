@@ -10,11 +10,11 @@ export default function ApartmentTable({ apartments, currentUser }) {
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/apartment/edit/${cell.row.values.id}`)
+        navigate(`/apartments/edit/${cell.row.values.id}`)
     }
 
     const detailsCallback = (cell) => {
-        navigate(`/apartment/details/${cell.row.values.id}`)
+        navigate(`/apartments/details/${cell.row.values.id}`)
     }
 
     // Stryker disable all : hard to test for query caching
@@ -22,7 +22,7 @@ export default function ApartmentTable({ apartments, currentUser }) {
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
-        ["/api/apartment/all"]
+        ["/api/apartments/all"]
     );
     // Stryker enable all 
 
@@ -61,8 +61,8 @@ export default function ApartmentTable({ apartments, currentUser }) {
     ];
 
     if (hasRole(currentUser, "ROLE_ADMIN")) {
-        columns.push(ButtonColumn("Edit", "primary", editCallback, "ApartmentTable"));
         columns.push(ButtonColumn("Details", "primary", detailsCallback, "ApartmentTable"));
+        columns.push(ButtonColumn("Edit", "primary", editCallback, "ApartmentTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "ApartmentTable"));
     } 
 

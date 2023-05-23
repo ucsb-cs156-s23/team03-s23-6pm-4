@@ -77,12 +77,17 @@ describe("MusicEditPage tests", () => {
             axiosMock.onGet("/api/music", { params: { id: 17 } }).reply(200, {
                 id: 17,
                 title: "NUMB",
-                album: "?"
+                album: "?",
+                artist: "XXX",
+                genre: "Sad"
             });
             axiosMock.onPut('/api/music').reply(200, {
                 id: "17",
                 title: "Lifeline",
-                album: "ILLENIUM"
+                album: "ILLENIUM",
+                artist: "ILLENIUM",
+                genre:"EDM"
+
             });
         });
 
@@ -112,11 +117,15 @@ describe("MusicEditPage tests", () => {
             const idField = getByTestId("MusicForm-id");
             const titleField = getByTestId("MusicForm-title");
             const albumField = getByTestId("MusicForm-album");
+            const artistField = getByTestId("MusicForm-artist");
+            const genreField = getByTestId("MusicForm-genre");
             const submitButton = getByTestId("MusicForm-submit");
 
             expect(idField).toHaveValue("17");
             expect(titleField).toHaveValue("NUMB");
             expect(albumField).toHaveValue("?");
+            expect(artistField).toHaveValue("XXX");
+            expect(genreField).toHaveValue("Sad");
         });
 
         test("Changes when you click Update", async () => {
@@ -136,16 +145,22 @@ describe("MusicEditPage tests", () => {
             const idField = getByTestId("MusicForm-id");
             const titleField = getByTestId("MusicForm-title");
             const albumField = getByTestId("MusicForm-album");
+            const artistField = getByTestId("MusicForm-artist");
+            const genreField = getByTestId("MusicForm-genre");
             const submitButton = getByTestId("MusicForm-submit");
 
             expect(idField).toHaveValue("17");
             expect(titleField).toHaveValue("NUMB");
             expect(albumField).toHaveValue("?");
+            expect(artistField).toHaveValue("XXX");
+            expect(genreField).toHaveValue("Sad");
 
             expect(submitButton).toBeInTheDocument();
 
             fireEvent.change(titleField, { target: { value: 'Lifeline' } })
             fireEvent.change(albumField, { target: { value: "ILLENIUM" } })
+            fireEvent.change(artistField, { target: { value: "ILLENIUM" } })
+            fireEvent.change(genreField, { target: { value: "EDM" } })
 
             fireEvent.click(submitButton);
 
@@ -157,7 +172,9 @@ describe("MusicEditPage tests", () => {
             expect(axiosMock.history.put[0].params).toEqual({ id: 17 });
             expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
                 title: "Lifeline",
-                album: "ILLENIUM"
+                album: "ILLENIUM",
+                artist: "ILLENIUM",
+                genre: "EDM"
             })); // posted object
 
         });

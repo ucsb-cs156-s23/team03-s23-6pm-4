@@ -37,7 +37,9 @@ describe("MusicDetailsPage tests", () => {
         axiosMock.onGet("/api/music", { params: { id: 3 } }).reply(200, {
             id: 6,
             title: "Cupid",
-            album: "The Beginning"
+            album: "The Beginning",
+            artist: "Fifty Fifty",
+            genre: "Kpop"
         });
     });
 
@@ -65,6 +67,8 @@ describe("MusicDetailsPage tests", () => {
         await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("6"); });
         expect(getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent("Cupid");
         expect(getByTestId(`${testId}-cell-row-0-col-album`)).toHaveTextContent("The Beginning");
+        expect(getByTestId(`${testId}-cell-row-0-col-artist`)).toHaveTextContent("Fifty Fifty");
+        expect(getByTestId(`${testId}-cell-row-0-col-genre`)).toHaveTextContent("Kpop");
 
         expect(screen.queryByText("Delete")).not.toBeInTheDocument();
         expect(screen.queryByText("Edit")).not.toBeInTheDocument();

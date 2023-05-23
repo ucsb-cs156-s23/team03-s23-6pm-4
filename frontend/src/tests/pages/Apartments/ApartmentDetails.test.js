@@ -20,6 +20,19 @@ jest.mock('react-toastify', () => {
     };
 });
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+    const originalModule = jest.requireActual('react-router-dom');
+    return {
+        __esModule: true,
+        ...originalModule,
+        useParams: () => ({
+            id: 1
+        }),
+        Navigate: (x) => { mockNavigate(x); return null; }
+    };
+});
+
 describe("ApartmentDetailsPage tests", () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
@@ -31,6 +44,8 @@ describe("ApartmentDetailsPage tests", () => {
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/apartments", { params: { id: 1 } }).timeout();
+
     };
 
     test("renders without crashing", () => {
@@ -45,6 +60,28 @@ describe("ApartmentDetailsPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
+    });
+
+    test("Is populated with the data provided", async () => {
+        setupBefore();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/apartments").reply(200, []);
+
+        const { getByTestId, findByTestId } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <ApartmentDetailsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
+        expect(getByTestId(`${testId}-cell-row-0-col-name`)).toHaveTextContent("Sierra Madre Villages");
+        expect(getByTestId(`${testId}-cell-row-0-col-address`)).toHaveTextContent("555 Storke Road");
+        expect(getByTestId(`${testId}-cell-row-0-col-city`)).toHaveTextContent("Goleta");
+        expect(getByTestId(`${testId}-cell-row-0-col-state`)).toHaveTextContent("CA");
+        expect(getByTestId(`${testId}-cell-row-0-col-rooms`)).toHaveTextContent("109");
+        expect(getByTestId(`${testId}-cell-row-0-col-description`)).toHaveTextContent("Nice and New");
     });
 
     test("loads the correct fields without buttons", async () => {

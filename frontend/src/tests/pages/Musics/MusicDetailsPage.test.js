@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, queryByTestId, render, waitFor, screen } from "@testing-library/react";
 import MusicDetailsPage from "main/pages/Musics/MusicDetailsPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { musicFixtures } from "fixtures/musicFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -17,30 +18,28 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
 }));
 
-jest.mock('main/utils/musicUtils', () => {
-    return {
-        __esModule: true,
-        musicUtils: {
-            getById: (_id) => {
-                return {
-                    music: {
-                        id: 3,
-                        title: "Let You Down",
-                        album: "Perception",
-                        artist: "NF",
-                        genre: "Hip hop"
-                    }
-                }
-            }
-        }
-    }
-});
 
 describe("MusicDetailsPage tests", () => {
 
     const axiosMock =new AxiosMockAdapter(axios);
     axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither); 
+
+    //const axiosMock = new AxiosMockAdapter(axios);
+
+    const testId = "MusicTable";
+
+    beforeEach(() => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/music", { params: { id: 3 } }).reply(200, {
+            id: 6,
+            title: "Cupid",
+            album: "The Beginning"
+        });
+    });
 
     const queryClient = new QueryClient();
     test("renders without crashing", () => {
@@ -54,17 +53,18 @@ describe("MusicDetailsPage tests", () => {
     });
 
     test("loads the correct fields, and no buttons", async () => {
-        render(
+
+        const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <MusicDetailsPage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
-        expect(screen.getByText("Let You Down")).toBeInTheDocument();
-        //expect(screen.getByText("Perception")).toBeInTheDocument();
-        expect(screen.getByText("NF")).toBeInTheDocument();
-        expect(screen.getByText("Hip hop")).toBeInTheDocument();
+
+        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("6"); });
+        expect(getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent("Cupid");
+        expect(getByTestId(`${testId}-cell-row-0-col-album`)).toHaveTextContent("The Beginning");
 
         expect(screen.queryByText("Delete")).not.toBeInTheDocument();
         expect(screen.queryByText("Edit")).not.toBeInTheDocument();

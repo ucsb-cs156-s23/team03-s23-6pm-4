@@ -10,13 +10,16 @@ export default function MusicCreatePage() {
     url: "/api/music/post",
     method: "POST",
     params: {
-      name: Music.name,
-      description: Music.description
+      title: Music.title,
+      album: Music.album,
+      artist: Music.artist,
+      genre: Music.genre
+
     }
   });
 
   const onSuccess = (Music) => {
-    toast(`New Music Created - id: ${Music.id} name: ${Music.name}`);
+    toast(`New Music Created - id: ${Music.id} title: ${Music.title}`);
   }
 
   const mutation = useBackendMutation(

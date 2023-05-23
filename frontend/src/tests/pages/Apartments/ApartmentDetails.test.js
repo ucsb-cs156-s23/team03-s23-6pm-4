@@ -108,18 +108,7 @@ jest.mock('react-toastify', () => {
     };
 });
 
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => {
-    const originalModule = jest.requireActual('react-router-dom');
-    return {
-        __esModule: true,
-        ...originalModule,
-        useParams: () => ({
-            id: 1
-        }),
-        Navigate: (x) => { mockNavigate(x); return null; }
-    };
-});
+
 
 describe("ApartmentDetailsPage tests", () => {
 
@@ -144,9 +133,9 @@ describe("ApartmentDetailsPage tests", () => {
     };
 
     test("renders without crashing", () => {
-        // setupBefore();
+        setupBefore();
         const queryClient = new QueryClient();
-        // axiosMock.onGet("/api/apartments").reply(200, []);
+        axiosMock.onGet("/api/apartments").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -158,9 +147,9 @@ describe("ApartmentDetailsPage tests", () => {
     });
 
     test("Is populated with the data provided", async () => {
-        // setupBefore();
+        setupBefore();
         const queryClient = new QueryClient();
-        // axiosMock.onGet("/api/apartments").reply(200, []);
+        axiosMock.onGet("/api/apartments").reply(200, []);
 
         const { getByTestId, findByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -180,9 +169,9 @@ describe("ApartmentDetailsPage tests", () => {
     });
 
     test("loads the correct fields without buttons", async () => {
-        // setupBefore();
+        setupBefore();
         const queryClient = new QueryClient();
-        // axiosMock.onGet("/api/apartments").reply(200, apartmentFixtures.oneApartment);
+        axiosMock.onGet("/api/apartments").reply(200, apartmentFixtures.oneApartment);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>

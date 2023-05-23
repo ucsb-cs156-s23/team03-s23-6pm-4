@@ -60,7 +60,9 @@ describe("MusicCreatePage tests", () => {
         const Music = {
             id: 3,
             title: "Everything Goes On",
-            album: "Everything Goes On"
+            album: "Everything Goes On",
+            artist: "Porter Robinson",
+            genre: "EDM"
         };
 
         axiosMock.onPost("/api/music/post").reply( 202, Music );
@@ -79,10 +81,14 @@ describe("MusicCreatePage tests", () => {
 
         const titleField = getByTestId("MusicForm-title");
         const albumField = getByTestId("MusicForm-album");
+        const artistField = getByTestId("MusicForm-artist");
+        const genreField = getByTestId("MusicForm-genre");
         const submitButton = getByTestId("MusicForm-submit");
 
         fireEvent.change(titleField, { target: { value: 'Everything Goes On' } });
         fireEvent.change(albumField, { target: { value: 'Everything Goes On' } });
+        fireEvent.change(genreField, { target: { value: 'Porter Robinson' } });
+        fireEvent.change(genreField, { target: { value: 'EDM' } });
 
         expect(submitButton).toBeInTheDocument();
 
@@ -92,11 +98,14 @@ describe("MusicCreatePage tests", () => {
 
         expect(axiosMock.history.post[0].params).toEqual(
             {
-            "title": "Freebirds",
-            "album": "Best nachos in Isla Vista"
+            "title": "Everything Goes On",
+            "album": "Everything Goes On",
+            "artist": "Porter Robinson",
+            "genre": "EDM"
+
         });
 
-        expect(mockToast).toBeCalledWith("New Music Created - id: 3 title: Freebirds");
+        expect(mockToast).toBeCalledWith("New Music Created - id: 3 title: Everything Goes On");
         expect(mockNavigate).toBeCalledWith({ "to": "/musics/list" });
     });
 

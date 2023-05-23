@@ -45,7 +45,7 @@ describe("MusicIndexPage tests", () => {
     test("renders without crashing for regular user", () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/ucsbdates/all").reply(200, []);
+        axiosMock.onGet("/api/music/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>

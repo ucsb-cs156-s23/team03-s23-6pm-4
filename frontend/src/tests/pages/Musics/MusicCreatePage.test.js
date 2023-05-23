@@ -7,6 +7,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import MockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
@@ -87,7 +88,7 @@ describe("MusicCreatePage tests", () => {
 
         fireEvent.change(titleField, { target: { value: 'Everything Goes On' } });
         fireEvent.change(albumField, { target: { value: 'Everything Goes On' } });
-        fireEvent.change(genreField, { target: { value: 'Porter Robinson' } });
+        fireEvent.change(artistField, { target: { value: 'Porter Robinson' } });
         fireEvent.change(genreField, { target: { value: 'EDM' } });
 
         expect(submitButton).toBeInTheDocument();

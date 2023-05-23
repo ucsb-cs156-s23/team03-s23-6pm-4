@@ -81,6 +81,17 @@ function App() {
           )
         }
 
+        {
+          hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/musics/create" element={<MusicCreatePage />} />
+              <Route exact path="/musics/edit/:id" element={<MusicEditPage />} />
+              <Route exact path="/musics/details/:id" element={<MusicDetailsPage />} />
+              <Route exact path="/musics/list" element={<MusicIndexPage />} /> 
+            </>
+          )
+        }
+
 {
         hasRole(currentUser, "ROLE_USER") && (
             <>

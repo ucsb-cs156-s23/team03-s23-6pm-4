@@ -24,7 +24,7 @@ export default function ApartmentDetailsPage() {
     <BasicLayout>
       <div className="pt-2">
         <h1>Apartment Details</h1>
-        {apartment && <ApartmentTable apartments={[apartment]} showButtons={false} />}
+        {apartment && <ApartmentTable apartments={[apartment]} />}
       </div>
     </BasicLayout>
   )

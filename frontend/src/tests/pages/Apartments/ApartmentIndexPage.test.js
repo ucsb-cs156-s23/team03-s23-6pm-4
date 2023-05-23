@@ -60,7 +60,7 @@ describe("ApartmentIndexPage tests", () => {
     test("renders without crashing for admin user", () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/s/all").reply(200, []);
+        axiosMock.onGet("/api/apartments/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -73,7 +73,7 @@ describe("ApartmentIndexPage tests", () => {
 
     });
 
-    test("renders three dates without crashing for regular user", async () => {
+    test("renders three apartments without crashing for regular user", async () => {
         setupUserOnly();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments/all").reply(200, apartmentFixtures.threeApartments);
@@ -92,7 +92,7 @@ describe("ApartmentIndexPage tests", () => {
 
     });
 
-    test("renders three dates without crashing for admin user", async () => {
+    test("renders three apartments without crashing for admin user", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments/all").reply(200, apartmentFixtures.threeApartments);

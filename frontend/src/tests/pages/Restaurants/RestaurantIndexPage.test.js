@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import RestaurantIndexPage from "main/pages/Restaurants/RestaurantIndexPage";
 
-
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { restaurantFixtures } from "fixtures/restaurantFixtures";
@@ -45,7 +44,7 @@ describe("RestaurantIndexPage tests", () => {
     test("renders without crashing for regular user", () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/ucsbdates/all").reply(200, []);
+        axiosMock.onGet("/api/restaurant/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>

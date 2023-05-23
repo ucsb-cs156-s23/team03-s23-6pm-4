@@ -60,8 +60,8 @@ export default function ApartmentTable({ apartments, currentUser }) {
         }
     ];
 
-    columns.push(ButtonColumn("Details", "primary", detailsCallback, "ApartmentTable"));
     if (hasRole(currentUser, "ROLE_ADMIN")) {
+        columns.push(ButtonColumn("Details", "primary", detailsCallback, "ApartmentTable"));
         columns.push(ButtonColumn("Edit", "primary", editCallback, "ApartmentTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "ApartmentTable"));
     } 

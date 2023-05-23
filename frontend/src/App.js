@@ -98,7 +98,7 @@ function App() {
               <Route exact path="/apartments/create" element={<ApartmentCreatePage />} />
               <Route exact path="/apartments/edit/:id" element={<ApartmentEditPage />} />
               <Route exact path="/apartments/details/:id" element={<ApartmentDetailsPage />} />
-              <Route exact path="/apartments/" element={<ApartmentIndexPage />} />
+              <Route exact path="/apartments/list" element={<ApartmentIndexPage />} />
             </>
           )
         }

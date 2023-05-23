@@ -1,38 +1,46 @@
-import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import ApartmentCreatePage from "main/pages/Apartments/ApartmentCreatePage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import mockConsole from "jest-mock-console";
 
-import { apiCurrentUserFixtures }  from "fixtures/currentUserFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigate
-}));
-
-const mockAdd = jest.fn();
-jest.mock('main/utils/apartmentUtils', () => {
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
     return {
         __esModule: true,
-        apartmentUtils: {
-            add: () => { return mockAdd(); }
-        }
-    }
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+    const originalModule = jest.requireActual('react-router-dom');
+    return {
+        __esModule: true,
+        ...originalModule,
+        Navigate: (x) => { mockNavigate(x); return null; }
+    };
 });
 
 describe("ApartmentCreatePage tests", () => {
 
     const axiosMock =new AxiosMockAdapter(axios);
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither); 
 
-    const queryClient = new QueryClient();
+    beforeEach(() => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    });
+
     test("renders without crashing", () => {
+        const queryClient = new QueryClient();
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -42,74 +50,67 @@ describe("ApartmentCreatePage tests", () => {
         );
     });
 
-    test("redirects to /apartments on submit", async () => {
+    test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
 
-        const restoreConsole = mockConsole();
+        const queryClient = new QueryClient();
+        const apartment = {
+            id: 17,
+            name: "Sierra Madre Villages",
+            address: "555 Storke Road",
+            city: "Goleta",
+            state: "CA",
+            rooms: 109,
+            description: "Nice and New"
+        };
 
-        mockAdd.mockReturnValue({
-            "apartment": {
-                id: 3,
-                name: "Santa Ynez",
-                address: "6750 El Colegio Road",
-                city: "Goleta",
-                state: "CA",
-                rooms: 200,
-                description: "Seems nice"
-            }
-        });
+        axiosMock.onPost("/api/apartments/post").reply( 202, apartment );
 
-        render(
+        const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <ApartmentCreatePage />
                 </MemoryRouter>
             </QueryClientProvider>
-        )
+        );
 
-        const nameInput = screen.getByLabelText("Name");
-        expect(nameInput).toBeInTheDocument();
-
-        const addressInput = screen.getByLabelText("Address");
-        expect(addressInput).toBeInTheDocument();
-
-        const cityInput = screen.getByLabelText("City");
-        expect(cityInput).toBeInTheDocument();
-
-        const stateInput = screen.getByLabelText("State");
-        expect(stateInput).toBeInTheDocument();
-
-        const roomsInput = screen.getByLabelText("Rooms");
-        expect(roomsInput).toBeInTheDocument();
-
-        const descriptionInput = screen.getByLabelText("Description");
-        expect(descriptionInput).toBeInTheDocument();
-
-        const createButton = screen.getByText("Create");
-        expect(createButton).toBeInTheDocument();
-
-        await act(async () => {
-            fireEvent.change(nameInput, { target: { value: 'Santa Ynez' } })
-            fireEvent.change(addressInput, { target: { value: '6750 El Colegio Road' } })
-            fireEvent.change(cityInput, { target: { value: 'Goleta' } })
-            fireEvent.change(stateInput, { target: { value: 'CA' } })
-            fireEvent.change(roomsInput, { target: { value: 200 } })
-            fireEvent.change(descriptionInput, { target: { value: 'Seems nice' } })
-            fireEvent.click(createButton);
+        await waitFor(() => {
+            expect(getByTestId("ApartmentForm-name")).toBeInTheDocument();
         });
 
-        await waitFor(() => expect(mockAdd).toHaveBeenCalled());
-        await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/apartments"));
+        const nameField = getByTestId("ApartmentForm-name");
+        const addressField = getByTestId("ApartmentForm-address");
+        const cityField = getByTestId("ApartmentForm-city");
+        const stateField = getByTestId("ApartmentForm-state");
+        const roomsField = getByTestId("ApartmentForm-rooms");
+        const descriptionField = getByTestId("ApartmentForm-description");
+        const submitButton = getByTestId("ApartmentForm-submit");
 
-        // assert - check that the console.log was called with the expected message
-        expect(console.log).toHaveBeenCalled();
-        const message = console.log.mock.calls[0][0];
-        const expectedMessage =  `createdApartment: {"apartment":{"id":3,"name":"Santa Ynez","address":"6750 El Colegio Road","city":"Goleta","state":"CA","rooms":200,"description":"Seems nice"}`
+        fireEvent.change(nameField, { target: { value: 'Sierra Madre Villages' } });
+        fireEvent.change(addressField, { target: { value: '555 Storke Road' } });
+        fireEvent.change(cityField, { target: { value: 'Goleta' } });
+        fireEvent.change(stateField, { target: { value: 'CA' } });
+        fireEvent.change(roomsField, { target: { value: '109' } });
+        fireEvent.change(descriptionField, { target: { value: 'Nice and New' } });
+        
+        expect(submitButton).toBeInTheDocument();
 
-        expect(message).toMatch(expectedMessage);
-        restoreConsole();
+        fireEvent.click(submitButton);
 
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(axiosMock.history.post[0].params).toEqual(
+            {
+            "name": "Sierra Madre Villages",
+            "address": "555 Storke Road",
+            "city": "Goleta",
+            "state": "CA",
+            "rooms": "109",
+            "description": "Nice and New"
+        });
+
+        expect(mockToast).toBeCalledWith("New apartment Created - id: 17 name: Sierra Madre Villages");
+        expect(mockNavigate).toBeCalledWith({ "to": "/apartments/list" });
     });
 
+
 });
-
-

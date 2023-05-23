@@ -40,24 +40,24 @@ public class ApartmentControllerTests extends ControllerTestCase {
         @MockBean
         UserRepository userRepository;
 
-        // Authorization tests for /api/apartment/admin/all
+        // Authorization tests for /api/apartments/admin/all
 
         @Test
         public void logged_out_users_cannot_get_all() throws Exception {
-                mockMvc.perform(get("/api/apartment/all"))
+                mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().is(403)); // logged out users can't get all
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_users_can_get_all() throws Exception {
-                mockMvc.perform(get("/api/apartment/all"))
+                mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().is(200)); // logged
         }
 
         @Test
         public void logged_out_users_cannot_get_by_id() throws Exception {
-                mockMvc.perform(get("/api/apartment?code=carrillo"))
+                mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().is(403)); // logged out users can't get by id
         }
 
@@ -66,14 +66,14 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
         @Test
         public void logged_out_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/apartment/post"))
+                mockMvc.perform(post("/api/apartments/post"))
                                 .andExpect(status().is(403));
         }
 
         @WithMockUser(roles = { "USER" })
         @Test
         public void logged_in_regular_users_cannot_post() throws Exception {
-                mockMvc.perform(post("/api/apartment/post"))
+                mockMvc.perform(post("/api/apartments/post"))
                                 .andExpect(status().is(403)); // only admins can post
         }
 
@@ -87,7 +87,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment apartment = Apartment.builder()
                                 .name("Sierra Madre Villages")
-                                .code("sierra-madre-villages")
                                 .address("555 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -95,15 +94,15 @@ public class ApartmentControllerTests extends ControllerTestCase {
                                 .description("Nice and New")
                                 .build();
 
-                when(apartmentRepository.findById(eq("sierra-madre-villages"))).thenReturn(Optional.of(apartment));
+                when(apartmentRepository.findById(eq(7L))).thenReturn(Optional.of(apartment));
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment?code=sierra-madre-villages"))
+                MvcResult response = mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
 
-                verify(apartmentRepository, times(1)).findById(eq("sierra-madre-villages"));
+                verify(apartmentRepository, times(1)).findById(eq(7L));
                 String expectedJson = mapper.writeValueAsString(apartment);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
@@ -115,18 +114,18 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // arrange
 
-                when(apartmentRepository.findById(eq("munger-hall"))).thenReturn(Optional.empty());
+                when(apartmentRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment?code=munger-hall"))
+                MvcResult response = mockMvc.perform(get("/api/apartments?id=7"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
 
-                verify(apartmentRepository, times(1)).findById(eq("munger-hall"));
+                verify(apartmentRepository, times(1)).findById(eq(7L));
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("EntityNotFoundException", json.get("type"));
-                assertEquals("Apartment with id munger-hall not found", json.get("message"));
+                assertEquals("Apartment with id 7 not found", json.get("message"));
         }
 
         @WithMockUser(roles = { "USER" })
@@ -137,7 +136,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment sierraMadreVillages = Apartment.builder()
                                 .name("Sierra Madre Villages")
-                                .code("sierra-madre-villages")
                                 .address("555 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -147,7 +145,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment elDorado = Apartment.builder()
                                 .name("El Dorado")
-                                .code("el-dorado")
                                 .address("6667 El Colegio Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -155,19 +152,19 @@ public class ApartmentControllerTests extends ControllerTestCase {
                                 .description("Tropicana but Nicer")
                                 .build();
 
-                ArrayList<Apartment> expectedApartment = new ArrayList<>();
-                expectedApartment.addAll(Arrays.asList(sierraMadreVillages, elDorado));
+                ArrayList<Apartment> expectedApartments = new ArrayList<>();
+                expectedApartments.addAll(Arrays.asList(sierraMadreVillages, elDorado));
 
-                when(apartmentRepository.findAll()).thenReturn(expectedApartment);
+                when(apartmentRepository.findAll()).thenReturn(expectedApartments);
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/apartment/all"))
+                MvcResult response = mockMvc.perform(get("/api/apartments/all"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
 
                 verify(apartmentRepository, times(1)).findAll();
-                String expectedJson = mapper.writeValueAsString(expectedApartment);
+                String expectedJson = mapper.writeValueAsString(expectedApartments);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
@@ -179,7 +176,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment sanJoaquinNorthVillages = Apartment.builder()
                                 .name("San Joaquin North Villages")
-                                .code("san-joaquin-north-villages")
                                 .address("650 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -191,7 +187,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/apartment/post?name=San Joaquin North Villages&code=san-joaquin-north-villages&address=650 Storke Road&city=Goleta&state=CA&rooms=166&description=Nice but Far")
+                                post("/api/apartments/post?name=San Joaquin North Villages&address=650 Storke Road&city=Goleta&state=CA&rooms=166&description=Nice but Far")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -204,12 +200,11 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_can_delete_a_date() throws Exception {
+        public void admin_can_delete_an_apartment() throws Exception {
                 // arrange
 
                 Apartment sierraMadreVillages = Apartment.builder()
                                 .name("Sierra Madre Villages")
-                                .code("sierra-madre-villages")
                                 .address("555 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -217,20 +212,20 @@ public class ApartmentControllerTests extends ControllerTestCase {
                                 .description("Nice and New")
                                 .build();
 
-                when(apartmentRepository.findById(eq("sierra-madre-villages"))).thenReturn(Optional.of(sierraMadreVillages));
+                when(apartmentRepository.findById(eq(15L))).thenReturn(Optional.of(sierraMadreVillages));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/apartment?code=sierra-madre-villages")
+                                delete("/api/apartments?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(apartmentRepository, times(1)).findById("sierra-madre-villages");
+                verify(apartmentRepository, times(1)).findById(15L);
                 verify(apartmentRepository, times(1)).delete(any());
 
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Apartment with id sierra-madre-villages deleted", json.get("message"));
+                assertEquals("Apartment with id 15 deleted", json.get("message"));
         }
 
         @WithMockUser(roles = { "ADMIN", "USER" })
@@ -239,18 +234,18 @@ public class ApartmentControllerTests extends ControllerTestCase {
                         throws Exception {
                 // arrange
 
-                when(apartmentRepository.findById(eq("munger-hall"))).thenReturn(Optional.empty());
+                when(apartmentRepository.findById(eq(15L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                delete("/api/apartment?code=munger-hall")
+                                delete("/api/apartments?id=15")
                                                 .with(csrf()))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(apartmentRepository, times(1)).findById("munger-hall");
+                verify(apartmentRepository, times(1)).findById(15L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Apartment with id munger-hall not found", json.get("message"));
+                assertEquals("Apartment with id 15 not found", json.get("message"));
         }
 
         @WithMockUser(roles = { "ADMIN", "USER" })
@@ -260,7 +255,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment sierraMadreVillagesOrig = Apartment.builder()
                                 .name("Sierra Madre Villages")
-                                .code("sierra-madre-villages")
                                 .address("555 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -270,7 +264,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment sierraMadreVillagesEdited = Apartment.builder()
                                 .name("Sierra Madre")
-                                .code("sierra-madre-villages")
                                 .address("556 Storke Road")
                                 .city("Isla Vista")
                                 .state("Cali.")
@@ -280,11 +273,11 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 String requestBody = mapper.writeValueAsString(sierraMadreVillagesEdited);
 
-                when(apartmentRepository.findById(eq("sierra-madre-villages"))).thenReturn(Optional.of(sierraMadreVillagesOrig));
+                when(apartmentRepository.findById(eq(67L))).thenReturn(Optional.of(sierraMadreVillagesOrig));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/apartment?code=sierra-madre-villages")
+                                put("/api/apartments?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -292,7 +285,7 @@ public class ApartmentControllerTests extends ControllerTestCase {
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(apartmentRepository, times(1)).findById("sierra-madre-villages");
+                verify(apartmentRepository, times(1)).findById(67L);
                 verify(apartmentRepository, times(1)).save(sierraMadreVillagesEdited); // should be saved with updated info
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(requestBody, responseString);
@@ -305,7 +298,6 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 Apartment editedApartment = Apartment.builder()
                                 .name("Munger Hall")
-                                .code("munger-hall")
                                 .address("555 Storke Road")
                                 .city("Goleta")
                                 .state("CA")
@@ -315,11 +307,11 @@ public class ApartmentControllerTests extends ControllerTestCase {
 
                 String requestBody = mapper.writeValueAsString(editedApartment);
 
-                when(apartmentRepository.findById(eq("munger-hall"))).thenReturn(Optional.empty());
+                when(apartmentRepository.findById(eq(67L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/apartment?code=munger-hall")
+                                put("/api/apartments?id=67")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -327,9 +319,9 @@ public class ApartmentControllerTests extends ControllerTestCase {
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(apartmentRepository, times(1)).findById("munger-hall");
+                verify(apartmentRepository, times(1)).findById(67L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("Apartment with id munger-hall not found", json.get("message"));
+                assertEquals("Apartment with id 67 not found", json.get("message"));
 
         }
 }

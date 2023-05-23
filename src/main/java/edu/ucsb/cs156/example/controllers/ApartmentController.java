@@ -21,9 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-
 @Api(description = "Apartment")
-@RequestMapping("/api/apartment")
+@RequestMapping("/api/apartments")
 @RestController
 @Slf4j
 public class ApartmentController extends ApiController {
@@ -43,9 +42,9 @@ public class ApartmentController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public Apartment getById(
-            @ApiParam("code") @RequestParam String code) {
-        Apartment apartment = apartmentRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, code));
+            @ApiParam("id") @RequestParam Long id) {
+        Apartment apartment = apartmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, id));
 
         return apartment;
     }
@@ -54,7 +53,6 @@ public class ApartmentController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Apartment postApartment(
-        @ApiParam("code") @RequestParam String code,
         @ApiParam("name") @RequestParam String name,
         @ApiParam("address") @RequestParam String address,
         @ApiParam("city") @RequestParam String city,
@@ -65,7 +63,6 @@ public class ApartmentController extends ApiController {
         {
 
         Apartment apartment = new Apartment();
-        apartment.setCode(code);
         apartment.setName(name);
         apartment.setAddress(address);
         apartment.setCity(city);
@@ -82,24 +79,23 @@ public class ApartmentController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteApartment(
-            @ApiParam("code") @RequestParam String code) {
-        Apartment apartment = apartmentRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, code));
+            @ApiParam("id") @RequestParam Long id) {
+        Apartment apartment = apartmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, id));
 
         apartmentRepository.delete(apartment);
-        return genericMessage("Apartment with id %s deleted".formatted(code));
+        return genericMessage("Apartment with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single apartment")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
-    public Apartment updateCommons(
-            @ApiParam("code") @RequestParam String code,
+    public Apartment updateApartments(
+            @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Apartment incoming) {
 
-        Apartment apartment = apartmentRepository.findById(code)
-                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, code));
-
+        Apartment apartment = apartmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Apartment.class, id));
 
         apartment.setName(incoming.getName());  
         apartment.setAddress(incoming.getAddress());

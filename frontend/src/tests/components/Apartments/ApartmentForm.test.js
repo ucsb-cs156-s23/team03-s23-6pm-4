@@ -1,10 +1,7 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter as Router } from "react-router-dom";
-
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import ApartmentForm from "main/components/Apartments/ApartmentForm";
 import { apartmentFixtures } from "fixtures/apartmentFixtures";
-
-import { QueryClient, QueryClientProvider } from "react-query";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const mockedNavigate = jest.fn();
 
@@ -13,65 +10,124 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedNavigate
 }));
 
+
 describe("ApartmentForm tests", () => {
-    const queryClient = new QueryClient();
 
-    const expectedHeaders = ["Name", "Address", "City", "State", "Rooms", "Description"];
-    const testId = "ApartmentForm";
+    test("renders correctly", async () => {
 
-    test("renders correctly with no initialContents", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <ApartmentForm />
-                </Router>
-            </QueryClientProvider>
+        const { getByText, findByText } = render(
+            <Router  >
+                <ApartmentForm />
+            </Router>
         );
+        await findByText(/Name/);
+        await findByText(/Create/);
+    });
 
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
 
-        expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-          });
+    test("renders correctly when passing in a Apartment", async () => {
+
+        const { getByText, getByTestId, findByTestId } = render(
+            <Router  >
+                <ApartmentForm initialContents={apartmentFixtures.oneApartment} />
+            </Router>
+        );
+        await findByTestId(/ApartmentForm-id/);
+        expect(getByText(/Id/)).toBeInTheDocument();
+        expect(getByTestId(/ApartmentForm-id/)).toHaveValue("1");
+    });
+
+
+    test("Correct Error messsages on bad input", async () => {
+
+        const { getByTestId, getByText, findByTestId, findByText } = render(
+            <Router  >
+                <ApartmentForm />
+            </Router>
+        );
+        await findByTestId("ApartmentForm-name");
+        const roomsField = getByTestId("ApartmentForm-rooms");
+        const submitButton = getByTestId("ApartmentForm-submit");
+
+        fireEvent.change(roomsField, { target: { value: -1 } });
+        fireEvent.click(submitButton);
+
+        await findByText(/Number of rooms must be a whole number/);
+        expect(getByText(/Number of rooms must be a whole number/)).toBeInTheDocument();
+    });
+
+    test("Correct Error messsages on missing input", async () => {
+
+        const { getByTestId, getByText, findByTestId, findByText } = render(
+            <Router  >
+                <ApartmentForm />
+            </Router>
+        );
+        await findByTestId("ApartmentForm-submit");
+        const submitButton = getByTestId("ApartmentForm-submit");
+
+        fireEvent.click(submitButton);
+
+        await findByText(/Name is required./);
+        expect(getByText(/Address is required./)).toBeInTheDocument();
+        expect(getByText(/City is required./)).toBeInTheDocument();
+        expect(getByText(/State is required./)).toBeInTheDocument();
+        expect(getByText(/Number of rooms is required./)).toBeInTheDocument();
+        expect(getByText(/Description is required./)).toBeInTheDocument();
 
     });
 
-    test("renders correctly when passing in initialContents", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <ApartmentForm initialContents={apartmentFixtures.oneApartment} />
-                </Router>
-            </QueryClientProvider>
+    test("No Error messsages on good input", async () => {
+
+        const mockSubmitAction = jest.fn();
+
+
+        const { getByTestId, queryByText, findByTestId } = render(
+            <Router  >
+                <ApartmentForm submitAction={mockSubmitAction} />
+            </Router>
         );
+        await findByTestId("ApartmentForm-name");
 
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+        const nameField = getByTestId("ApartmentForm-name");
+        const addressField = getByTestId("ApartmentForm-address");
+        const cityField = getByTestId("ApartmentForm-city");
+        const stateField = getByTestId("ApartmentForm-state");
+        const roomsField = getByTestId("ApartmentForm-rooms");
+        const descriptionField = getByTestId("ApartmentForm-description");
+        const submitButton = getByTestId("ApartmentForm-submit");
 
-        expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-        });
+        fireEvent.change(nameField, { target: { value: 'Sierra Madre Villages' } });
+        fireEvent.change(addressField, { target: { value: '555 Storke Road' } });
+        fireEvent.change(cityField, { target: { value: 'Goleta' } });
+        fireEvent.change(stateField, { target: { value: 'CA' } });
+        fireEvent.change(roomsField, { target: { value: 109 } });
+        fireEvent.change(descriptionField, { target: { value: 'Nice and New' } });
+        fireEvent.click(submitButton);
 
-        expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
-        expect(screen.getByText(`Id`)).toBeInTheDocument();
+        await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
+
+        expect(queryByText(/Number of rooms must be a whole number/)).not.toBeInTheDocument();
+
     });
 
 
     test("that navigate(-1) is called when Cancel is clicked", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <ApartmentForm />
-                </Router>
-            </QueryClientProvider>
+
+        const { getByTestId, findByTestId } = render(
+            <Router  >
+                <ApartmentForm />
+            </Router>
         );
-        expect(await screen.findByTestId(`${testId}-cancel`)).toBeInTheDocument();
-        const cancelButton = screen.getByTestId(`${testId}-cancel`);
+        await findByTestId("ApartmentForm-cancel");
+        const cancelButton = getByTestId("ApartmentForm-cancel");
 
         fireEvent.click(cancelButton);
 
         await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
+
     });
 
 });
+
+

@@ -3,7 +3,6 @@ import { Button, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
-
 function UCSBDateForm({ initialUCSBDate, submitAction, buttonLabel="Create" }) {
 
     // Stryker disable all

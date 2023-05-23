@@ -45,11 +45,7 @@ function ApartmentForm({ initialContents, submitAction, buttonLabel = "Create" }
                     type="text"
                     isInvalid={Boolean(errors.name)}
                     {...register("name", {
-                        required: "Name is required.",
-                        maxLength : {
-                            value: 30,
-                            message: "Max length 30 characters"
-                        }
+                        required: "Name is required."
                     })}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -112,12 +108,11 @@ function ApartmentForm({ initialContents, submitAction, buttonLabel = "Create" }
                     id="rooms"
                     type="number"
                     isInvalid={Boolean(errors.rooms)}
-                    {...register("rooms", {
-                        required: "Number of rooms is required."
-                    })}
+                    {...register("rooms", { required: true, min: 0 })}
                 />
                 <Form.Control.Feedback type="invalid">
-                    {errors.rooms?.message}
+                    {errors.rooms && 'Number of rooms is required.'}
+                    {errors.rooms && 'Number of rooms must be a whole number'}
                 </Form.Control.Feedback>
             </Form.Group>
 
@@ -136,7 +131,6 @@ function ApartmentForm({ initialContents, submitAction, buttonLabel = "Create" }
                     {errors.description?.message}
                 </Form.Control.Feedback>
             </Form.Group>
-
 
             <Button
                 type="submit"

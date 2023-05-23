@@ -1,34 +1,28 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button';
+import { useBackend } from 'main/utils/useBackend';
+
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import ApartmentTable from 'main/components/Apartments/ApartmentTable';
-import { apartmentUtils } from 'main/utils/apartmentUtils';
-import { useNavigate, Link } from 'react-router-dom';
+import { useCurrentUser } from 'main/utils/currentUser'
 
 export default function ApartmentIndexPage() {
 
-    const navigate = useNavigate();
+  const currentUser = useCurrentUser();
 
-    const apartmentCollection = apartmentUtils.get();
-    const apartments = apartmentCollection.apartments;
+  const { data: apartments, error: _error, status: _status } =
+    useBackend(
+      // Stryker disable next-line all : don't test internal caching of React Query
+      ["/api/apartments/all"],
+      { method: "GET", url: "/api/apartments/all" },
+      []
+    );
 
-    const showCell = (cell) => JSON.stringify(cell.row.values);
-
-    const deleteCallback = async (cell) => {
-        console.log(`ApartmentIndexPage deleteCallback: ${showCell(cell)})`);
-        apartmentUtils.del(cell.row.values.id);
-        navigate("/apartments");
-    }
-
-    return (
-        <BasicLayout>
-            <div className="pt-2">
-                <Button style={{ float: "right" }} as={Link} to="/apartments/create">
-                    Create Apartment
-                </Button>
-                <h1>Apartments</h1>
-                <ApartmentTable apartments={apartments} deleteCallback={deleteCallback} />
-            </div>
-        </BasicLayout>
-    )
+  return (
+    <BasicLayout>
+      <div className="pt-2">
+        <h1>Apartment</h1>
+        <ApartmentTable apartments={apartments} currentUser={currentUser} />
+      </div>
+    </BasicLayout>
+  )
 }

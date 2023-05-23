@@ -26,7 +26,7 @@ describe("ApartmentDetailsPage tests", () => {
 
     const testId = "ApartmentTable";
 
-    beforeEach = () => {
+    const setupBefore = () => {
         axiosMock.reset();
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
@@ -34,7 +34,7 @@ describe("ApartmentDetailsPage tests", () => {
     };
 
     test("renders without crashing", () => {
-        // beforeEach();
+        setupBefore();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments").reply(200, []);
 
@@ -48,7 +48,7 @@ describe("ApartmentDetailsPage tests", () => {
     });
 
     test("loads the correct fields without buttons", async () => {
-        // beforeEach();
+        setupBefore();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/apartments").reply(200, apartmentFixtures.oneApartment);
 
